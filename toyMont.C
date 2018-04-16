@@ -8,7 +8,7 @@ int bCluster = 5;
 int xSizeArray = 10;
 int ySizeArray = 20;
 int numClusters2 = 1;
-int darkC = 10;
+int darkC = 100;
 
 // int auxRand = 10000;
 
