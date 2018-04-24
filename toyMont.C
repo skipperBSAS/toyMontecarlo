@@ -1,4 +1,4 @@
-//#include <TRandom>
+#include <random>
 #include <ctime>
 #include <cstdlib>
 #include "fitsio.h"
@@ -8,16 +8,19 @@
 #include <cstdlib>
 #include <vector>
 #include <iostream>
+#include <chrono>
+// #include "Poisson.h"
 using namespace std;
 // #include <array>
+#include "TRandom2.h"
 
 
 // Inputs
 int bCluster = 1;
-int xSizeArray = 100;
-int ySizeArray = 20;
-int numClusters2 = 10;
-int darkC = 10;  // Dark Current Events
+int xSizeArray = 375;
+int ySizeArray = 50;
+int numClusters2 = 50;
+int darkC = 550;  // Dark Current Events
 int auxX=0;
 int auxY=0;
 int X;
@@ -27,6 +30,8 @@ long fpixel[2] = {1,1};
 
 int sizeArray = xSizeArray*ySizeArray;
 int totpixSkp = sizeArray;
+
+TRandom2 randEng;
 
 void clustCreator(int numClust, int sizeClust, double array[]){
     int* clArray = new int[2*sizeClust*2*sizeClust];
@@ -53,7 +58,25 @@ void clustCreator(int numClust, int sizeClust, double array[]){
         // }
         
         // int rand = 10000;
-        int auxRand = 10000;
+        // std::default_random_engine generator;
+        // std::poisson_distribution<int> distribution(1500);
+        
+        
+        
+        // std::tr1::poisson_distribution<double> poisson(7.0);
+        // std::cout << poisson(eng) << std::endl;
+        
+        // if an event occurs 4 times a minute on average
+        // how often is it that it occurs n times in one minute?
+        // std::poisson_distribution<> d(1500);
+        
+        int auxRand=0;
+        
+        
+        // cout << d(gen) << endl;
+        int auxxRand = randEng.Poisson(1500);
+        
+        cout << auxxRand << " " << endl;
         int sumRand = 0;
         int rest = 0;
         int azzardo = 0;
@@ -66,27 +89,32 @@ void clustCreator(int numClust, int sizeClust, double array[]){
         
         if (sizeClust!=1){
             
-            auxRand = (rand() % (auxRand/2 + auxRand%2));
+            auxRand = (rand() % (auxxRand/2 + auxxRand%2));
             // The symbol % after "rand()" multiply it by the term between brackets
-            rest = 10000 - auxRand;
+            rest = auxxRand- auxRand;
+        }else{
+            
+            auxRand = auxxRand;
         }
-        
         // cout << auxRand << endl;
         
         sumRand +=  auxRand;
         
+        
         clArray[2*sizeClust*Y+ X] += auxRand;
         
-        for (int h = 0; h <2*sizeClust; ++h)
-        {
-            cout << "\n"  << endl    ;
-            for (int j = 0; j < 2*sizeClust; ++j)
-            {
-                // cout<< "|" << 2*sizeClust*h + j << "|";
-                
-                cout<< "|" << clArray[2*sizeClust*h + j]<< "|";
-            }
-        }
+        if (sizeClust==1) continue;
+        
+        //     for (int h = 0; h <2*sizeClust; ++h)
+        // {
+        //     cout << "\n"  << endl    ;
+        //     for (int j = 0; j < 2*sizeClust; ++j)
+        //     {
+        //         // cout<< "|" << 2*sizeClust*h + j << "|";
+        
+        //         cout<< "|" << clArray[2*sizeClust*h + j]<< "|";
+        //     }
+        // }
         
         
         for (int j = 1; j < sizeClust; ++j)
@@ -96,7 +124,7 @@ void clustCreator(int numClust, int sizeClust, double array[]){
             azzardo = (rand() % 4) + 1 ;
             // Here the code chooses where to add the pixel
             
-            cout << "azzardo: " << azzardo << endl;
+            // cout << "azzardo: " << azzardo << endl;
             
             if (azzardo == 1)
             {
@@ -132,7 +160,7 @@ void clustCreator(int numClust, int sizeClust, double array[]){
                 Y = auxY;
                 
                 if(j==sizeClust-1){
-                    clArray[2*sizeClust*Y+ X]+= 10000 - sumRand ;
+                    clArray[2*sizeClust*Y+ X]+= auxxRand - sumRand ;
                 }else{
                     
                     // cout << "rest" << rest << endl;
@@ -154,14 +182,14 @@ void clustCreator(int numClust, int sizeClust, double array[]){
         
         // cout << "i:" << i << endl;
         
-        for (int i1 = 0; i1 <2*sizeClust; ++i1)
-        {
-            cout << "\n"  << endl    ;
-            for (int j = 0; j < 2*sizeClust; ++j)
-            {
-                cout<< "|" << clArray[2*sizeClust*i1 + j]<< "|";
-            }
-        }
+        // for (int i1 = 0; i1 <2*sizeClust; ++i1)
+        //     {
+        //         cout << "\n"  << endl    ;
+        //         for (int j = 0; j < 2*sizeClust; ++j)
+        //         {
+        //             cout<< "|" << clArray[2*sizeClust*i1 + j]<< "|";
+        //         }
+        //     }
         
         // Find xMin , ...
         
@@ -186,7 +214,7 @@ void clustCreator(int numClust, int sizeClust, double array[]){
             }
         }
         
-        cout << "yMin:" << yMin << endl;
+        // cout << "yMin:" << yMin << endl;
         
         for (int ix = 0; ix < 2*sizeClust; ++ix)
         {
@@ -209,7 +237,7 @@ void clustCreator(int numClust, int sizeClust, double array[]){
         }
         
         
-        cout << "xMin:" << xMin << endl;
+        // cout << "xMin:" << xMin << endl;
         
         for (int ix = 2*sizeClust -1; ix >=0 ; --ix)
         {
@@ -594,6 +622,7 @@ void printArray(double array[]){
 }
 
 int main(){
+    randEng.SetSeed(0);
     
     srand( time( NULL ) ); //seed
     double*   array = new double[sizeArray];
@@ -619,7 +648,14 @@ int main(){
     
     // for (int i = 0; i < bCluster; ++i)
     // {
-    clustCreator(10,2,array);
+    clustCreator(20,1,array);
+    clustCreator(50,2,array);
+    clustCreator(50,3,array);
+    clustCreator(90,4,array);
+    clustCreator(60,4,array);
+    clustCreator(30,4,array);
+    clustCreator(20,4,array);
+    
     // numCluster2: number of cluster to be created
     // 2: cluster size
     // printArray(array);
@@ -629,9 +665,9 @@ int main(){
     
     // printArray(array);
     
-    measureCCD(array);
+    // measureCCD(array);
     
-    //printArray(array);
+    // printArray(array);
     
     
     fits_create_img(outClusterptr, -32, naxis, naxesOut, &status);
