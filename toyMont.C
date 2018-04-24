@@ -631,7 +631,7 @@ int main(){
     
     measureCCD(array);
     
-    printArray(array);
+    //printArray(array);
     
     
     fits_create_img(outClusterptr, -32, naxis, naxesOut, &status);
