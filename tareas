@@ -1,0 +1,36 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Tareas de transferencia (lo que estaría bueno que Andre nos cuente)
+
+Como usar el sistema de forma remota.
+Como agregar DC usando clustering.exe
+Que informacion extraer de los root files (catálogos).
+
+Entender el codigo de skipper2root pensando en futuras modificaciones.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Tareas de desarrollo (escritura de código)
+
+André -> Cambios de DC por linea en toyMont.C
+Dario -> Modelado de la difusion en toyMC.C
+Mariano -> Scripts para familiarizarse con ROOT 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Tareas de analisis (sobre datos reales o de Monte Carlo)
+
+Analizar medicines de DC.
+
+Usando toyMont:
+Calcular corrimientos en la distribucion de tamaño de clusters en función del nivel de DC.
+
+Usando toyMC:
+Ajustar parámetros físicos hasta "recuperar" la distribución de clusters de mediciones reales.
+
+Usando clustering:
+Estudiar el cambio en la distribución de clusters por agregado de DC.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Tareas de Hardware (para realizar en forma remota)
+
+Pensar en pruebas para estudiar el cambio en la ganancia.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
