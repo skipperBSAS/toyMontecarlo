@@ -1,3 +1,4 @@
+FITSIOROOT = /home/dario/CCD/Datos_Fe55/cfitsio/
 CFITSIO = $(FITSIOROOT)
 CPP = g++
 CC = gcc
@@ -11,17 +12,17 @@ ifeq "$(GCCNEWERTHAN47)" "1"
 else
   CFLAGS += -std=c++0x
 endif
-OBJECTS =  Mont.o 
+OBJECTS =  toyMC10.o 
 #HEADERS = globalConstants.h
 
-ALL : Mont.exe
+ALL : toyMC10.exe
 	@echo "Listo!"
 
-Mont.exe : $(OBJECTS)
-	$(CPP) $(OBJECTS) -o Mont.exe $(LIBS) $(GLIBS) $(CFLAGS)
+toyMC10.exe : $(OBJECTS)
+	$(CPP) $(OBJECTS) -o toyMC10.exe $(LIBS) $(GLIBS) $(CFLAGS)
 
-Mont.o : toyMont.C $(HEADERS)
-	$(CPP) -c toyMont.C -o Mont.o $(CFLAGS)
+toyMC10.o : toyMC10.C $(HEADERS)
+	$(CPP) -c toyMC10.C -o toyMC10.o $(CFLAGS)
 
 clean:
 	rm -f *~ *.o *.exe
