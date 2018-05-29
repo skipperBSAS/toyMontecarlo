@@ -68,9 +68,6 @@ int pix_dc[sizeArray]; //vector de pixeles con eventos DC
 //int xpix[xSize]; //array de los pixeles en x
 //int ypix[ySize]; //array de los pixeles en y
 
-//int pix[xSize][ySize]; //matriz de xSize x ySize de pixeles
-//int pix_dc[xSize][ySize]; //matriz de xSize x ySize de pixeles con DC (es redundante porque array es lo mismo pero le da un poco mas de coherencia al codigo)
-
 //lleno de 0 a pi
 
 for (int i = 0; i < sizeArray; ++i) pix[i]=0;
@@ -219,8 +216,12 @@ for (int i = 0; i < electrons[j]; ++i){
 	 
  }
 
-}   // End loop over x-rays interactions
+} 
 
+// End loop over x-rays interactions
+
+
+// This loop generates darkC events of dark current ////////////////
  for (int i = 0; i < darkC; ++i) // Considerar generar posición de la DC en los reales y luego pixelar
     {
         X =  (rand() % (nx-1)) +1;
@@ -261,7 +262,7 @@ for (int i = 0; i < electrons[j]; ++i){
     
 	for (int i = 0; i < sizeArray; ++i) array[i] = 0;
        
-// Save the content of each bin into the variable pix[i][j] ////////////
+// Save the content of each bin into the variable array ////////////
 	for (int i = 0; i < nx; ++i) {	
 		for (int j = 0; j < ny; ++j) {
 		
