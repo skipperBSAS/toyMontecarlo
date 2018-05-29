@@ -5,7 +5,8 @@ Código escrito para simular:
 - Profundidad zz donde tuvo lugar la interacción del foton X
 - Número de cargas generadas en cada interacción
 - Distribución de cargas que llega a la superficie del CCD
-- Numero de cargas por pixel
+- Numero de cargas por pixel.
+- Pixeles generador por corriente oscura
 - Distribucion de los pixeles que conforman cada cluster
 
 */    
@@ -37,7 +38,7 @@ int main() {
 TStopwatch t;
 t.Start();
 
-int N0=5;
+int N0=50;
 //N0 represents the number of X-rays that interact with the CCD ////////
 
 int emeannumber = 1000;
@@ -49,15 +50,18 @@ int emeannumber = 1000;
 int tau=50; 
 
 // CCD size. Real dimension: 4126 x 866.
+<<<<<<< HEAD
 int nx = 400;            // Number of pixels in x-direction
 int ny = 100;            // Number of pixels in y-direction
+=======
+int nx = 40;            // Number of pixels in x-direction
+int ny = 40;            // Number of pixels in y-direction
+>>>>>>> 2b4a72ba4856a1a69f74dbd241c5a979e2f3d3a9
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
 int sizeArray =nx*ny; // tamaño en pixeles de la CCD
 long fpixel[2] = {1,1};
-
-
 
 int pix[sizeArray]; //vector de pixeles
 int pix_dc[sizeArray]; //vector de pixeles con eventos DC
@@ -66,8 +70,6 @@ int pix_dc[sizeArray]; //vector de pixeles con eventos DC
 
 //int pix[xSize][ySize]; //matriz de xSize x ySize de pixeles
 //int pix_dc[xSize][ySize]; //matriz de xSize x ySize de pixeles con DC (es redundante porque array es lo mismo pero le da un poco mas de coherencia al codigo)
-
-
 
 //lleno de 0 a pi
 
@@ -87,10 +89,6 @@ int darkC = 10;
 
 //lleno de 0 a array
 for (int i = 0; i < sizeArray; ++i) pix_dc[i]=0;
-
-
-
-
 
 // Variables for random numbers ////////////////////////////////////////
 	vector<double> xx(N0);                                               
@@ -116,8 +114,6 @@ for (int i = 0; i < sizeArray; ++i) pix_dc[i]=0;
 	auto h6 = new TH1D("h6","spot x",binnumber,-xSize/2,3*xSize/2);
 	auto h7 = new TH1D("h7","spot y",binnumber,-ySize/2,3*ySize/2);
 
-
-
 // CCD con interacciones solamente
 	TCanvas *ch2p2 = new TCanvas("ch2p2","ch2p2",30*nx,30*ny);
 	TH2F *h2p = new TH2F("h2p","",nx,-0,xSize,ny,0,ySize); //este es el histograma 2D. xbins, xmin, xmax y luego y idem.
@@ -137,18 +133,11 @@ for (int i = 0; i < sizeArray; ++i) pix_dc[i]=0;
 	h2p_TOTAL->SetTitle("CCD_TOTAL");
 	// gStyle->SetPalette(1); // ????
 
-
-
 // Print TCanvas into pdf
    
    // ch2p2 ->cd();
    TString ps = "CCD.pdf";
    ch2p2->Print(ps+"[");
-
- 
-
-
-
 
 ////////////////////////////////////////////////////////////////////////	
 // This loop runs over each X-ray interaction //////////////////////////
@@ -191,7 +180,7 @@ for (int j = 0; j < N0; ++j){
     // AA y BB son variables medibles sacadas del trabajo que nos paso Javier T
     
     AA[j]=1;
-    BB[j]=1;
+    BB[j]=1; //This parameter could depend on the energy
     h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5)); 
     //cout << "sigma = "<< sigma[j] << endl;	
     
@@ -223,7 +212,7 @@ for (int j = 0; j < N0; ++j){
 	}
 
 for (int i = 0; i < electrons[j]; ++i){
-	 h2p->Fill(chargex[i], chargey[i]);
+	 h2p->Fill(chargex[i], chargey[i]); //Only interactions
 	 
 	 
 	 h2p_TOTAL->Fill(chargex[i], chargey[i]); //hasta ahora ambos histogramas tienen lo mismo, pero no sé copiarlos sin romperlos
@@ -232,7 +221,7 @@ for (int i = 0; i < electrons[j]; ++i){
 
 }   // End loop over x-rays interactions
 
- for (int i = 0; i < darkC; ++i)
+ for (int i = 0; i < darkC; ++i) // Considerar generar posición de la DC en los reales y luego pixelar
     {
         X =  (rand() % (nx-1)) +1;
         Y =  (rand() % (ny-1)) +1;
@@ -244,25 +233,22 @@ for (int i = 0; i < electrons[j]; ++i){
 		
         cout << "XX " << XX << " " << "YY " << YY << endl;
 
-		
         pix_dc[nx*Y+X]+=  1;
                 
         h2p_DC->Fill(XX,YY);
 		h2p_TOTAL->Fill(XX,YY);
     }
 
-
-
 // Show CCD 2D plot ////////////////////////////////////////////////////
-	ch2p2->Divide(2,2);
+	ch2p2->Divide(1,3);
 	ch2p2->cd(1);
-	h2p->Draw("COLZ"); // CCD interacciones
+	h2p->Draw("COLZ"); // Interactions
 	
 	ch2p2->cd(2);
-	h2p_DC->Draw("COLZ"); // CCD DC
+	h2p_DC->Draw("COLZ"); // Dark Current
 	
 	ch2p2->cd(3);
-	h2p_TOTAL->Draw("COLZ"); // CCD interacciones+DC
+	h2p_TOTAL->Draw("COLZ"); // Interactions + Dark Current
 
 	ch2p2->Print(ps);
 	ch2p2->Print(ps+"]");
@@ -293,7 +279,6 @@ for (int i = 0; i < electrons[j]; ++i){
 //le agrego DC a pix
 
 
-	
 /////////////////////////////  CARGAS DE INTERACCIONES  ///////////////////////////////////////////
 	
 	cout<< "CERO ";
