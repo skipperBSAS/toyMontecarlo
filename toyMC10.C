@@ -50,8 +50,13 @@ int emeannumber = 1000;
 int tau=50; 
 
 // CCD size. Real dimension: 4126 x 866.
+<<<<<<< HEAD
+int nx = 400;            // Number of pixels in x-direction
+int ny = 100;            // Number of pixels in y-direction
+=======
 int nx = 40;            // Number of pixels in x-direction
 int ny = 40;            // Number of pixels in y-direction
+>>>>>>> 2b4a72ba4856a1a69f74dbd241c5a979e2f3d3a9
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
@@ -62,9 +67,6 @@ int pix[sizeArray]; //vector de pixeles
 int pix_dc[sizeArray]; //vector de pixeles con eventos DC
 //int xpix[xSize]; //array de los pixeles en x
 //int ypix[ySize]; //array de los pixeles en y
-
-//int pix[xSize][ySize]; //matriz de xSize x ySize de pixeles
-//int pix_dc[xSize][ySize]; //matriz de xSize x ySize de pixeles con DC (es redundante porque array es lo mismo pero le da un poco mas de coherencia al codigo)
 
 //lleno de 0 a pi
 
@@ -214,8 +216,12 @@ for (int i = 0; i < electrons[j]; ++i){
 	 
  }
 
-}   // End loop over x-rays interactions
+} 
 
+// End loop over x-rays interactions
+
+
+// This loop generates darkC events of dark current ////////////////
  for (int i = 0; i < darkC; ++i) // Considerar generar posición de la DC en los reales y luego pixelar
     {
         X =  (rand() % (nx-1)) +1;
@@ -256,7 +262,7 @@ for (int i = 0; i < electrons[j]; ++i){
     
 	for (int i = 0; i < sizeArray; ++i) array[i] = 0;
        
-// Save the content of each bin into the variable pix[i][j] ////////////
+// Save the content of each bin into the variable array ////////////
 	for (int i = 0; i < nx; ++i) {	
 		for (int j = 0; j < ny; ++j) {
 		
