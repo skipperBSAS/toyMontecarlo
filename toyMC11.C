@@ -44,20 +44,22 @@ int emeannumber = 1000;
 
 // To check distributions run N0=100000, emeannumber = 10.
 
-int darkC = 5; // Dark Current total events
+int darkC = 0; // Dark Current total events
 
 // Skin depth //////////////////////////////////////////////////////////
 int tau=50; 
 
 // CCD size. Real dimension: 4126 x 866.
-int nx = 20;            // Number of pixels in x-direction
-int ny = 20;            // Number of pixels in y-direction
+int nx = 30;            // Number of pixels in x-direction
+int ny = 30;            // Number of pixels in y-direction
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
 int sizeArray =nx*ny;   // Total number of pixels in the CCD
 
 long fpixel[2] = {1,1};
+
+
 
 double*  pix_int = new double[sizeArray];
 double*  pix_dc = new double[sizeArray];
@@ -115,9 +117,6 @@ for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 	h2p_TOTAL->SetName("Pixels");
 	h2p_TOTAL->SetTitle("CCD Interactions + Dark Current");
 	
-// Print TCanvas into pdf
-   TString ps = "CCD.pdf";
-   ch2p2->Print(ps+"[");
 
 ////////////////////////////////////////////////////////////////////////	
 // This loop runs over each X-ray interaction //////////////////////////
@@ -204,15 +203,17 @@ for (int i = 0; i < electrons[j]; ++i){
 for (int i = 0; i < darkC; ++i) {
         double xdc =  rand() % xSize;
         double ydc =  rand() % ySize;
-                              
-        h2p_DC->Fill(xdc,ydc);
-		h2p_TOTAL->Fill(xdc,ydc);
+        h2p_TOTAL->Fill(xdc,ydc);
+}
+
+for (int j=0; j<nx; ++j){                      
+        h2p_DC->Fill(j*pixSize,j*pixSize);
 }
  
 cout<< "MC simulations finished. "<<endl;
     
 // Show CCD 2D plot ////////////////////////////////////////////////////
-	ch2p2->Divide(1,3);
+	ch2p2->Divide(2,2);
 	ch2p2->cd(1);
 	h2p_int->Draw("COLZ"); // Interactions
 	
@@ -222,25 +223,36 @@ cout<< "MC simulations finished. "<<endl;
 	ch2p2->cd(3);
 	h2p_TOTAL->Draw("COLZ"); // Interactions + Dark Current
 
+
+
+
+
+
+
+// Print TCanvas into pdf
+   TString ps = "CCD.pdf";
+   ch2p2->Print(ps+"[");
+
+
 	ch2p2->Print(ps);
 	ch2p2->Print(ps+"]");
 
 ////////////////////////////////////////////////////////////////////////
 // Save the content of each histogram into pix variables ///////////////
 
-for (int i = 0; i < nx; ++i) {	
+for (int i = 0; i < nx; ++i) {
 		for (int j = 0; j < ny; ++j) {
-				   
-		   pix_int[(i)*(nx)+(j)]= h2p_int->GetBinContent(i*nx+j+23); 
+		   pix_int[i]= h2p_int->GetBinContent(i,j); 
 		   //pix_int[i*nx+j]= 10*(i*nx+j); 
-		   cout<<"bin: "<<i*nx+j<<" Interactions: "<<pix_int[i*nx+j]<<endl;
+		  // cout<<"bin: "<<i<<" Interactions: "<<pix_int[i]<<endl;
+		   //cout<<"bin: "<<i*nx+j<<" Interactions: "<<pix_int[i*nx+j]<<endl;
 		   
-		   pix_dc[i*nx+j]= h2p_DC->GetBinContent(i*nx+j); 
+		   pix_dc[i*nx+j]= h2p_DC->GetBinContent(i+1,j+1); 
 		   cout<<"bin: "<<i*nx+j<<" Dark Current: "<<pix_dc[i*nx+j]<<endl;
 		   
-		   pix_total[i*nx+j]= h2p_TOTAL->GetBinContent(i*nx+j); 
-		   cout<<"bin: "<<i*nx+j<<" Interac + DC: "<<pix_total[i*nx+j]<<endl;
-		   cout<<endl;
+		   //pix_total[i*nx+j]= h2p_TOTAL->GetBinContent(i*nx+j); 
+		   //cout<<"bin: "<<i*nx+j<<" Interac + DC: "<<pix_total[i*nx+j]<<endl;
+		   //cout<<endl;
 		   
 		}
 	}
@@ -252,10 +264,10 @@ cout<< "Starting to save fits files ..."<<endl;
 
 	int naxis = 2;
     int status = 0;
-    long naxesOut[9] = {nx, ny, 1, 1, 1, 1, 1, 1, 1};
+    long naxesOut[9] = {nx, ny, 1, 1, 1, 1, 1, 1, 1}; //va desde 0 hasta donde marques
 
 ///////////////////////Real Interactions ///////////////////////////////	
-        
+ /*        
 	std::string outMeanFitsFile1 = "real_interactions.fits";
     
     fitsfile *outClusterptr1;
@@ -270,8 +282,8 @@ cout<< "Starting to save fits files ..."<<endl;
     
     cout<< "real_interactions.fits saved "<<endl;
     
-	
-/* 
+	*/	
+
 ////////////////////////// Dark Current ////////////////////////////////
 		
 	std::string outMeanFitsFile2 = "dc.fits";
@@ -288,7 +300,7 @@ cout<< "Starting to save fits files ..."<<endl;
     
     cout<< "dc.fits saved "<<endl;
     
-    
+    	/*
     
 ///////////////  Real Interactions + Dark Current///////////////////////
 	
@@ -310,8 +322,8 @@ cout<< "Starting to save fits files ..."<<endl;
 	
 
 ////////////////////////////////////////////////////////////////////////
-	*/
-	
+
+		*/
 	
 	
 	
