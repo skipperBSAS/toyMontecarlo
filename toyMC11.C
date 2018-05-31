@@ -36,7 +36,7 @@ int main() {
 TStopwatch t;
 t.Start();
 
-int N0=10;
+int N0=3;
 //N0 represents the number of X-rays that interact with the CCD ////////
 
 int emeannumber = 1000;
@@ -231,7 +231,7 @@ cout<< "MC simulations finished. "<<endl;
 for (int i = 0; i < nx; ++i) {	
 		for (int j = 0; j < ny; ++j) {
 				   
-		   pix_int[i*nx+j]= h2p_int->GetBinContent(i*nx+j); 
+		   pix_int[(i)*(nx)+(j)]= h2p_int->GetBinContent(i*nx+j+23); 
 		   //pix_int[i*nx+j]= 10*(i*nx+j); 
 		   cout<<"bin: "<<i*nx+j<<" Interactions: "<<pix_int[i*nx+j]<<endl;
 		   
@@ -271,7 +271,7 @@ cout<< "Starting to save fits files ..."<<endl;
     cout<< "real_interactions.fits saved "<<endl;
     
 	
-
+/* 
 ////////////////////////// Dark Current ////////////////////////////////
 		
 	std::string outMeanFitsFile2 = "dc.fits";
@@ -310,6 +310,19 @@ cout<< "Starting to save fits files ..."<<endl;
 	
 
 ////////////////////////////////////////////////////////////////////////
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	    
 // Plot histograms /////////////////////////////////////////////////////
 /*
