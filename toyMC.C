@@ -35,7 +35,7 @@ int main() {
 TStopwatch t;
 t.Start();
 
-int N0=10;
+int N0=100;
 //N0 represents the number of X-rays that interact with the CCD ////////
 
 int emeannumber = 1000;
@@ -43,14 +43,14 @@ int emeannumber = 1000;
 
 // To check distributions run N0=100000, emeannumber = 10.
 
-int darkC = 10; // Dark Current total events
+int darkC = 100; // Dark Current total events
 
 // Skin depth //////////////////////////////////////////////////////////
 int tau=50; 
 
 // CCD size. Real dimension: 4126 x 866.
-int nx = 30;            // Number of pixels in x-direction
-int ny = 30;            // Number of pixels in y-direction
+int nx = 412;            // Number of pixels in x-direction
+int ny = 86;            // Number of pixels in y-direction
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
@@ -58,15 +58,9 @@ int sizeArray =nx*ny;   // Total number of pixels in the CCD
 
 long fpixel[2] = {1,1};
 
-double*  pix_int = new double[sizeArray];
-double*  pix_dc = new double[sizeArray];
-double*  pix_total = new double[sizeArray];
-
-/*
-int pix_int[sizeArray]; // pixels array with real interactions
-int pix_dc[sizeArray];  // pixels array with dark current
-int pix_total[sizeArray];     // pixels array with all information
-*/
+double*  pix_int = new double[sizeArray];   // pixels array with real interactions
+double*  pix_dc = new double[sizeArray];    // pixels array with dark current
+double*  pix_total = new double[sizeArray]; // pixels array with all information
 
 // Initialization 
 for (int i = 0; i < sizeArray; ++i) pix_int[i]=0; 
