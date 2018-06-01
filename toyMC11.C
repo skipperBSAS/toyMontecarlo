@@ -29,14 +29,13 @@ Código escrito para simular:
 #include "TStopwatch.h"
 using namespace std;
 
-
 int main() {
 
 // time counter
 TStopwatch t;
 t.Start();
 
-int N0=3;
+int N0=10;
 //N0 represents the number of X-rays that interact with the CCD ////////
 
 int emeannumber = 1000;
@@ -44,7 +43,7 @@ int emeannumber = 1000;
 
 // To check distributions run N0=100000, emeannumber = 10.
 
-int darkC = 0; // Dark Current total events
+int darkC = 10; // Dark Current total events
 
 // Skin depth //////////////////////////////////////////////////////////
 int tau=50; 
@@ -58,8 +57,6 @@ int ySize = ny*pixSize; // y CCD size in microns
 int sizeArray =nx*ny;   // Total number of pixels in the CCD
 
 long fpixel[2] = {1,1};
-
-
 
 double*  pix_int = new double[sizeArray];
 double*  pix_dc = new double[sizeArray];
@@ -203,11 +200,8 @@ for (int i = 0; i < electrons[j]; ++i){
 for (int i = 0; i < darkC; ++i) {
         double xdc =  rand() % xSize;
         double ydc =  rand() % ySize;
+        h2p_DC->Fill(xdc,ydc);
         h2p_TOTAL->Fill(xdc,ydc);
-}
-
-for (int j=0; j<nx; ++j){                      
-        h2p_DC->Fill(j*pixSize,j*pixSize);
 }
  
 cout<< "MC simulations finished. "<<endl;
@@ -223,12 +217,6 @@ cout<< "MC simulations finished. "<<endl;
 	ch2p2->cd(3);
 	h2p_TOTAL->Draw("COLZ"); // Interactions + Dark Current
 
-
-
-
-
-
-
 // Print TCanvas into pdf
    TString ps = "CCD.pdf";
    ch2p2->Print(ps+"[");
@@ -243,8 +231,7 @@ cout<< "MC simulations finished. "<<endl;
 for (int i = 0; i < nx; ++i) {	
 		for (int j = 0; j < ny; ++j) {
 				   
-		   pix_int[j*nx+i]= h2p_int->GetBinContent(i+1,j+1); 
-		   //pix_int[i*nx+j]= 10*(i*nx+j); 
+		   pix_int[j*nx+i]= h2p_int->GetBinContent(i+1,j+1);
 		   cout<<"bin: "<<i*nx+j<<" Interactions: "<<pix_int[i*nx+j]<<endl;
 		   
 		   pix_dc[j*nx+i]= h2p_DC->GetBinContent(i+1,j+1); 
@@ -252,10 +239,11 @@ for (int i = 0; i < nx; ++i) {
 		   
 		   pix_total[j*nx+i]= h2p_TOTAL->GetBinContent(i+1,j+1); 
 		   cout<<"bin: "<<i*nx+j<<" Interac + DC: "<<pix_total[i*nx+j]<<endl;
+		   
 		   cout<<endl;
 		   
 		}
-	}
+}
 
 cout<< "Starting to save fits files ..."<<endl;
 
@@ -267,7 +255,7 @@ cout<< "Starting to save fits files ..."<<endl;
     long naxesOut[9] = {nx, ny, 1, 1, 1, 1, 1, 1, 1}; //va desde 0 hasta donde marques
 
 ///////////////////////Real Interactions ///////////////////////////////	
- /*        
+        
 	std::string outMeanFitsFile1 = "real_interactions.fits";
     
     fitsfile *outClusterptr1;
@@ -282,7 +270,6 @@ cout<< "Starting to save fits files ..."<<endl;
     
     cout<< "real_interactions.fits saved "<<endl;
     
-	*/	
 
 ////////////////////////// Dark Current ////////////////////////////////
 		
@@ -300,7 +287,6 @@ cout<< "Starting to save fits files ..."<<endl;
     
     cout<< "dc.fits saved "<<endl;
     
-    	/*
     
 ///////////////  Real Interactions + Dark Current///////////////////////
 	
@@ -318,23 +304,9 @@ cout<< "Starting to save fits files ..."<<endl;
     
     cout<< "real_interactions+dc.fits saved "<<endl;
     
-	
-	
 
 ////////////////////////////////////////////////////////////////////////
 
-		*/
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	    
 // Plot histograms /////////////////////////////////////////////////////
 /*
