@@ -29,45 +29,30 @@ Código escrito para simular:
 #include "TStopwatch.h"
 using namespace std;
 
-int main() {
-
-// time counter
-TStopwatch t;
-t.Start();
-
-int N0=100;
-//N0 represents the number of X-rays that interact with the CCD ////////
-
-int emeannumber = 1000;
-// emeannumber: mean number of electrons generates by a X-ray //////////
+int N0=100; //N0 represents the number of X-rays that interact with the CCD ////////
+int emeannumber = 1000; // emeannumber: mean number of electrons generates by a X-ray //////////
+int tau=50;  // skin depth
 
 // To check distributions run N0=100000, emeannumber = 10.
 
 int darkC = 100; // Dark Current total events
 
-// Skin depth //////////////////////////////////////////////////////////
-int tau=50; 
-
 // CCD size. Real dimension: 4126 x 866.
-int nx = 412;            // Number of pixels in x-direction
-int ny = 86;            // Number of pixels in y-direction
+int nx = 30;            // Number of pixels in x-direction
+int ny = 30;            // Number of pixels in y-direction
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
 int sizeArray =nx*ny;   // Total number of pixels in the CCD
-
 long fpixel[2] = {1,1};
 
-double*  pix_int = new double[sizeArray];   // pixels array with real interactions
-double*  pix_dc = new double[sizeArray];    // pixels array with dark current
-double*  pix_total = new double[sizeArray]; // pixels array with all information
 
-// Initialization 
-for (int i = 0; i < sizeArray; ++i) pix_int[i]=0; 
-for (int i = 0; i < sizeArray; ++i) pix_dc[i]=0; 
-for (int i = 0; i < sizeArray; ++i) pix_total[i]=0; 
+// This loop runs over each X-ray interaction //////////////////////////
+void interaction(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7,  TH2F *h2p_int,  TH2F *h2p_TOTAL){
 
-// Variables for random numbers ////////////////////////////////////////
+for (int j = 0; j < N0; ++j){ 
+
+	// Variables for random numbers ////////////////////////////////////////
 	vector<double> xx(N0);                                               
 	vector<double> yy(N0);
 	vector<double> zz(N0);                                               
@@ -78,42 +63,6 @@ for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 	vector<double> electrons(N0);
     vector<double> sigma(N0);
     
-// Book 1D-histograms //////////////////////////////////////////////////
-	int binnumber = N0/5;
-	
-	auto h1 = new TH1D("h1","x-coordinate",binnumber,-xSize/4,1.25*xSize);
-	auto h2 = new TH1D("h2","y-coordinate",binnumber,-ySize/4,1.25*ySize);
-	auto h3 = new TH1D("h3","z-coordinate",binnumber,-tau/5,5*tau);
-	
-	double esigma= pow(emeannumber,0.5); //raiz de emeannumber
-	auto h4 = new TH1D("h4","number of electrons",binnumber,emeannumber-5*esigma,emeannumber+5*esigma);
-	auto h5 = new TH1D("h5","sigma",binnumber,-tau/10,tau/2);
-	auto h6 = new TH1D("h6","spot x",binnumber,-xSize/2,3*xSize/2);
-	auto h7 = new TH1D("h7","spot y",binnumber,-ySize/2,3*ySize/2);
-
-// CCD - Interactions Only
-	TCanvas *ch2p2 = new TCanvas("ch2p2","ch2p2",30*nx,30*ny);
-	
-	TH2F *h2p_int = new TH2F("h2p_int","",nx,-0,xSize,ny,0,ySize); //este es el histograma 2D. xbins, xmin, xmax y luego y idem.
-	h2p_int->SetName("Pixels");
-	h2p_int->SetTitle("CCD Interactions");
-	 
-// CCD - Dark Current Only
-	TH2F *h2p_DC = new TH2F("h2p_DC","",nx,-0,xSize,ny,0,ySize); //este es el histograma 2D. xbins, xmin, xmax y luego y idem.
-	h2p_DC->SetName("Pixels");
-	h2p_DC->SetTitle("CCD Dark Current");
-	 
-// CCD - Interactions + Dark Current
-	TH2F *h2p_TOTAL = new TH2F("h2p_TOTAL","",nx,-0,xSize,ny,0,ySize); //este es el histograma 2D. xbins, xmin, xmax y luego y idem.
-	h2p_TOTAL->SetName("Pixels");
-	h2p_TOTAL->SetTitle("CCD Interactions + Dark Current");
-	
-
-////////////////////////////////////////////////////////////////////////	
-// This loop runs over each X-ray interaction //////////////////////////
-
-for (int j = 0; j < N0; ++j){ 
-
 	// Generate a pair (xx, yy) of uniform random numbers //////////////
 	// (xx,yy) represents the coordinates of interaction in the CCD ////
 		
@@ -190,39 +139,28 @@ for (int i = 0; i < electrons[j]; ++i){
 
 }   // End loop over x-rays interactions
 
+
+}
+
+
 // Add dark Current ////////////////////////////////////////////////////
-for (int i = 0; i < darkC; ++i) {
-        double xdc =  rand() % xSize;
+void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL){
+
+	for (int i = 0; i < darkC; ++i){
+		
+	    double xdc =  rand() % xSize;
         double ydc =  rand() % ySize;
         h2p_DC->Fill(xdc,ydc);
         h2p_TOTAL->Fill(xdc,ydc);
+        
+	}
+ 
 }
  
-cout<< "MC simulations finished. "<<endl;
-    
-// Show CCD 2D plot ////////////////////////////////////////////////////
-	ch2p2->Divide(2,2);
-	ch2p2->cd(1);
-	h2p_int->Draw("COLZ"); // Interactions
-	
-	ch2p2->cd(2);
-	h2p_DC->Draw("COLZ"); // Dark Current
-	
-	ch2p2->cd(3);
-	h2p_TOTAL->Draw("COLZ"); // Interactions + Dark Current
-
-// Print TCanvas into pdf
-   TString ps = "CCD.pdf";
-   ch2p2->Print(ps+"[");
-
-
-	ch2p2->Print(ps);
-	ch2p2->Print(ps+"]");
-
-////////////////////////////////////////////////////////////////////////
+ 
 // Save the content of each histogram into pix variables ///////////////
-
-for (int i = 0; i < nx; ++i) {	
+void pix(double*  pix_int, double*  pix_dc, double*  pix_total, TH2F *h2p_int, TH2F *h2p_DC, TH2F *h2p_TOTAL){
+for (int i = 0; i < nx; ++i) {
 		for (int j = 0; j < ny; ++j) {
 				   
 		   pix_int[j*nx+i]= h2p_int->GetBinContent(i+1,j+1);
@@ -239,9 +177,16 @@ for (int i = 0; i < nx; ++i) {
 		}
 }
 
+}
+
+
+// Save into fits
+void save(int nx, int ny, int SizeArray, double*  pix_int, double*  pix_dc, double*  pix_total){
+
+
+
 cout<< "Starting to save fits files ..."<<endl;
 
-////////////////////////////////////////////////////////////////////////   
 // Save histograms as .fits files //////////////////////////////////////
 
 	int naxis = 2;
@@ -301,23 +246,24 @@ cout<< "Starting to save fits files ..."<<endl;
 
 ////////////////////////////////////////////////////////////////////////
 
-	    
+
+
+}
+
+
 // Plot histograms /////////////////////////////////////////////////////
-/*
+void hist(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7){
 if (N0>99){
 	TCanvas* canvas = new TCanvas("canvas","canvas",10,10,700,800);
 	canvas->Divide(3,3);
 	
 	canvas->cd(1);
-	gStyle->SetOptStat(10);
 	h1->Draw(""); // xx 
 	
 	canvas->cd(2);
-	gStyle->SetOptStat(10); 
 	h2->Draw(""); // yy
 	
 	canvas->cd(3);
-	gStyle->SetOptStat(10); 
 	h3->Draw(""); // zz
 	
 	canvas->cd(4);
@@ -325,19 +271,124 @@ if (N0>99){
 	h4->Draw(""); // #e
 	
 	canvas->cd(5);
-	gStyle->SetOptStat(10); 
 	h5->Draw(""); // sigma
 	
 	canvas->cd(6);
-	gStyle->SetOptStat(10); 
 	h6->Draw(""); // x
 	
 	canvas->cd(7);
-	gStyle->SetOptStat(10); 
 	h7->Draw(""); // y
 }
-*/
-t.Stop();
-t.Print(); 
-return 0;
+
+
 }
+
+
+int main(){
+	
+TStopwatch t; // time counter
+t.Start();
+
+double*  pix_int = new double[sizeArray];   // pixels array with real interactions
+double*  pix_dc = new double[sizeArray];    // pixels array with dark current
+double*  pix_total = new double[sizeArray]; // pixels array with all information
+// Initialization 
+for (int i = 0; i < sizeArray; ++i) pix_int[i]=0; 
+for (int i = 0; i < sizeArray; ++i) pix_dc[i]=0; 
+for (int i = 0; i < sizeArray; ++i) pix_total[i]=0; 
+
+
+
+// Book 1D-histograms //////////////////////////////////////////////////
+	int binnumber = N0/5;
+	
+	auto h1 = new TH1D("h1","x-coordinate",binnumber,-xSize/4,1.25*xSize);
+	auto h2 = new TH1D("h2","y-coordinate",binnumber,-ySize/4,1.25*ySize);
+	auto h3 = new TH1D("h3","z-coordinate",binnumber,-tau/5,5*tau);
+	
+	double esigma= pow(emeannumber,0.5); //raiz de emeannumber
+	auto h4 = new TH1D("h4","number of electrons",binnumber,emeannumber-5*esigma,emeannumber+5*esigma);
+	auto h5 = new TH1D("h5","sigma",binnumber,-tau/10,tau/2);
+	auto h6 = new TH1D("h6","spot x",binnumber,-xSize/2,3*xSize/2);
+	auto h7 = new TH1D("h7","spot y",binnumber,-ySize/2,3*ySize/2);
+
+// CCD - Interactions Only
+	TCanvas *ch2p2 = new TCanvas("ch2p2","ch2p2",30*nx,30*ny);
+	
+	TH2F *h2p_int = new TH2F("h2p_int","",nx,-0,xSize,ny,0,ySize); //este es el histograma 2D. xbins, xmin, xmax y luego y idem.
+	h2p_int->SetName("Pixels");
+	h2p_int->SetTitle("CCD Interactions");
+	 
+// CCD - Dark Current Only
+	TH2F *h2p_DC = new TH2F("h2p_DC","",nx,-0,xSize,ny,0,ySize); //este es el histograma 2D. xbins, xmin, xmax y luego y idem.
+	h2p_DC->SetName("Pixels");
+	h2p_DC->SetTitle("CCD Dark Current");
+	 
+// CCD - Interactions + Dark Current
+	TH2F *h2p_TOTAL = new TH2F("h2p_TOTAL","",nx,-0,xSize,ny,0,ySize); //este es el histograma 2D. xbins, xmin, xmax y luego y idem.
+	h2p_TOTAL->SetName("Pixels");
+	h2p_TOTAL->SetTitle("CCD Interactions + Dark Current");
+
+
+
+
+
+// This loop runs over each X-ray interaction //////////////////////////
+interaction(h1,h2,h3,h4,h5,h6,h7, h2p_int, h2p_TOTAL);
+
+// Add dark Current ////////////////////////////////////////////////////
+addDC(h2p_DC, h2p_TOTAL);
+
+cout<< "MC simulations finished. "<<endl;
+
+// Save the content of each histogram into pix variables ///////////////
+pix(pix_int,pix_dc,pix_total, h2p_int, h2p_DC, h2p_TOTAL);
+
+// Save into fits
+save(nx, ny, sizeArray, pix_int, pix_dc, pix_total);
+
+// Histograms (not checked)
+// hist(h1,h2,h3,h4,h5,h6,h7);
+
+
+
+
+// Show CCD 2D plot ////////////////////////////////////////////////////
+	ch2p2->Divide(2,2);
+	ch2p2->cd(1);
+	h2p_int->Draw("COLZ"); // Interactions
+	ch2p2->cd(2);
+	h2p_DC->Draw("COLZ"); // Dark Current
+	ch2p2->cd(3);
+	h2p_TOTAL->Draw("COLZ"); // Interactions + Dark Current
+
+// Print TCanvas into pdf
+	TString ps = "CCD.pdf";
+	ch2p2->Print(ps+"[");
+	ch2p2->Print(ps);
+	ch2p2->Print(ps+"]");
+
+
+
+
+	t.Stop();
+	t.Print(); 
+return 0;
+}    //End
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
