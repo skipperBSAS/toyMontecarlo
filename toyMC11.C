@@ -240,19 +240,19 @@ cout<< "MC simulations finished. "<<endl;
 ////////////////////////////////////////////////////////////////////////
 // Save the content of each histogram into pix variables ///////////////
 
-for (int i = 0; i < nx; ++i) {
+for (int i = 0; i < nx; ++i) {	
 		for (int j = 0; j < ny; ++j) {
-		   pix_int[i]= h2p_int->GetBinContent(i,j); 
+				   
+		   pix_int[j*nx+i]= h2p_int->GetBinContent(i+1,j+1); 
 		   //pix_int[i*nx+j]= 10*(i*nx+j); 
-		  // cout<<"bin: "<<i<<" Interactions: "<<pix_int[i]<<endl;
-		   //cout<<"bin: "<<i*nx+j<<" Interactions: "<<pix_int[i*nx+j]<<endl;
+		   cout<<"bin: "<<i*nx+j<<" Interactions: "<<pix_int[i*nx+j]<<endl;
 		   
-		   pix_dc[i*nx+j]= h2p_DC->GetBinContent(i+1,j+1); 
+		   pix_dc[j*nx+i]= h2p_DC->GetBinContent(i+1,j+1); 
 		   cout<<"bin: "<<i*nx+j<<" Dark Current: "<<pix_dc[i*nx+j]<<endl;
 		   
-		   //pix_total[i*nx+j]= h2p_TOTAL->GetBinContent(i*nx+j); 
-		   //cout<<"bin: "<<i*nx+j<<" Interac + DC: "<<pix_total[i*nx+j]<<endl;
-		   //cout<<endl;
+		   pix_total[j*nx+i]= h2p_TOTAL->GetBinContent(i+1,j+1); 
+		   cout<<"bin: "<<i*nx+j<<" Interac + DC: "<<pix_total[i*nx+j]<<endl;
+		   cout<<endl;
 		   
 		}
 	}
