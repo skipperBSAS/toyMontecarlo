@@ -12,17 +12,17 @@ ifeq "$(GCCNEWERTHAN47)" "1"
 else
   CFLAGS += -std=c++0x
 endif
-OBJECTS =  toymcprueba.o 
+OBJECTS =  toyMC.o 
 #HEADERS = globalConstants.h
 
-ALL : toymcprueba.exe
+ALL : toyMC.exe
 	@echo "Listo!"
 
-toymcprueba.exe : $(OBJECTS)
-	$(CPP) $(OBJECTS) -o toymcprueba.exe $(LIBS) $(GLIBS) $(CFLAGS)
+toyMC.exe : $(OBJECTS)
+	$(CPP) $(OBJECTS) -o toyMC.exe $(LIBS) $(GLIBS) $(CFLAGS)
 
-toymcprueba.o : toymcprueba.C $(HEADERS)
-	$(CPP) -c toymcprueba.C -o toymcprueba.o $(CFLAGS)
+toyMC.o : toyMC.C $(HEADERS)
+	$(CPP) -c toyMC.C -o toyMC.o $(CFLAGS)
 
 clean:
 	rm -f *~ *.o *.exe

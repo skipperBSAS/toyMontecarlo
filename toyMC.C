@@ -38,8 +38,8 @@ int tau=50;  // skin depth
 int darkC = 100; // Dark Current total events
 
 // CCD size. Real dimension: 4126 x 866.
-int nx = 30;            // Number of pixels in x-direction
-int ny = 30;            // Number of pixels in y-direction
+int nx = 400;            // Number of pixels in x-direction
+int ny = 80;            // Number of pixels in y-direction
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
