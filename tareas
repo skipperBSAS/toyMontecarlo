@@ -1,18 +1,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tareas de transferencia (lo que estaría bueno que Andre nos cuente)
 
-Como usar el sistema de forma remota.
-Como agregar DC usando clustering.exe
-Que informacion extraer de los root files (catálogos).
+Como usar el sistema de forma remota  ->HECHO 
+Como agregar DC usando clustering.exe ->HECHO 
+Que informacion extraer de los root files (catálogos). ->HECHO 
 
-Entender el codigo de skipper2root pensando en futuras modificaciones.
+Entender el codigo de skipper2root pensando en futuras modificaciones. ->EN CURSO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tareas de desarrollo (escritura de código)
 
-André -> Cambios de DC por linea en toyMont.C
-Dario -> Modelado de la difusion en toyMC.C
-Mariano -> Scripts para familiarizarse con ROOT 
+André -> Cambios de DC por linea en toyMont.C->HECHO 
+Dario -> Modelado de la difusion en toyMC.C ->HECHO 
+Mariano -> Scripts para familiarizarse con ROOT ->HECHO 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tareas de analisis (sobre datos reales o de Monte Carlo)
@@ -23,14 +23,14 @@ Usando toyMont:
 Calcular corrimientos en la distribucion de tamaño de clusters en función del nivel de DC.
 
 Usando toyMC:
-Ajustar parámetros físicos hasta "recuperar" la distribución de clusters de mediciones reales.
+Ajustar parámetros físicos hasta "recuperar" la distribución de clusters de mediciones reales. ->EN CURSO
 
 Usando clustering:
-Estudiar el cambio en la distribución de clusters por agregado de DC.
+Estudiar el cambio en la distribución de clusters por agregado de DC. ->EN CURSO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tareas de Hardware (para realizar en forma remota)
 
-Pensar en pruebas para estudiar el cambio en la ganancia.
+Pensar en pruebas para estudiar el cambio en la ganancia. ->EN CURSO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
