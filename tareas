@@ -14,6 +14,21 @@ André -> Cambios de DC por linea en toyMont.C->HECHO
 Dario -> Modelado de la difusion en toyMC.C ->HECHO 
 Mariano -> Scripts para familiarizarse con ROOT ->HECHO 
 
+emeannumber vs e (5,9 y 6,5 keV) (151/100 20,5/100)
+
+meter alfa y beta en interaction asociados a AA y BB para matchear con realidad
+
+modificar main(argc argv)
+
+modificar codigo para que el save etiquete en funcion de la entrada de barrido
+
+modificar .py para barrer grilla de parametros alfa y beta (y/o tau)
+
+COMPARAR TAMAÑO DE CLUSTERS
+1er objetivo desde una grilla
+2do objetivo minimizacion inteligente 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tareas de analisis (sobre datos reales o de Monte Carlo)
 
@@ -28,9 +43,26 @@ Ajustar parámetros físicos hasta "recuperar" la distribución de clusters de m
 Usando clustering:
 Estudiar el cambio en la distribución de clusters por agregado de DC. ->EN CURSO
 
+Sumar estadistica de rootfiles (ricardo)
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tareas de Hardware (para realizar en forma remota)
 
 Pensar en pruebas para estudiar el cambio en la ganancia. ->EN CURSO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Preguntas a Javier/Andre
+
+Como sabe clustering distinguir fondo de DC siendo que fondo no es constante y encontramos 900 eventos de e=1
+
+Por que ds9 esta calibrado energicamente
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Bibliografia
+
+Leer presentacion en busca de parametros alfa y beta
+
+Buscar valor para Tau (creo que Miguel trabajo en esto)
+
+
+
