@@ -29,17 +29,13 @@ Código escrito para simular:
 #include "TStopwatch.h"
 using namespace std;
 
-int N0=100; //N0 represents the number of X-rays that interact with the CCD ////////
-int emeannumber = 1000; // emeannumber: mean number of electrons generates by a X-ray //////////
-int tau=50;  // skin depth
 
-// To check distributions run N0=100000, emeannumber = 10.
 
-int darkC = 100; // Dark Current total events
+
 
 // CCD size. Real dimension: 4126 x 866.
-int nx = 400;            // Number of pixels in x-direction
-int ny = 80;            // Number of pixels in y-direction
+int nx = 20;            // Number of pixels in x-direction
+int ny = 20;            // Number of pixels in y-direction
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
@@ -48,7 +44,38 @@ long fpixel[2] = {1,1};
 
 
 // This loop runs over each X-ray interaction //////////////////////////
-void interaction(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7,  TH2F *h2p_int,  TH2F *h2p_TOTAL){
+//void interaction(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7,  TH2F *h2p_int,  TH2F *h2p_TOTAL){
+void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int tau, int N0){
+
+vector<double> emeannumber(N0); //emeannumber: mean number of electrons generates by a X-ray //////////
+
+for (int i = 0; i < N0; ++i){ 
+
+TRandom3 kalfa2(0);
+double alfa2= kalfa2.Uniform(0,1);
+TRandom3 kalfa1(0);
+double alfa1= kalfa1.Uniform(0,1);
+TRandom3 kbeta(0);
+double beta= kbeta.Uniform(0,1);
+
+if (alfa2<0.51){
+	emeannumber[i]=5887.65; //unidades en eV
+	i++;
+}
+if (alfa1<1.00){
+	emeannumber[i]=5898.75; //unidades en eV
+	i++;
+}
+if (beta<0.205){
+	emeannumber[i]=6490.45; //unidades en eV
+	i++;
+}
+//if (kbeta???<0.205){
+//	i++;
+//	emeanumber[j]=6535.2; //unidades en eV
+//}
+
+}
 
 for (int j = 0; j < N0; ++j){ 
 
@@ -67,18 +94,20 @@ for (int j = 0; j < N0; ++j){
 	// (xx,yy) represents the coordinates of interaction in the CCD ////
 		
     TRandom3 rx(0); //  seed=0  ->  different numbers every time         
-    h1->Fill(xx[j]=rx.Uniform(0,xSize)); 
+    //h1->Fill(xx[j]=rx.Uniform(0,xSize)); 
+    xx[j]=rx.Uniform(0,xSize);
 	                                               
     TRandom3 ry(0); //  seed=0  ->  different numbers every time         
-    h2->Fill(yy[j]=ry.Uniform(0,ySize)); 
+    //h2->Fill(yy[j]=ry.Uniform(0,ySize)); 
+    yy[j]=ry.Uniform(0,ySize);
            
 	////////////////////////////////////////////////////////////////////
 	// Generate zz: depth in the CCD
 	// An exponential random number with coefficient tau 
     
     TRandom3 rz(0); //  seed=0  ->  different numbers every time         
-    h3->Fill(zz[j] = rz.Exp(tau));                    
-
+    //h3->Fill(zz[j] = rz.Exp(tau));                    
+	zz[j] = rz.Exp(tau);
 	//cout << endl;
 	//cout << "x = "<< xx[j] << " , " << "y = "<< yy[j] << " , " << "z = "<< zz[j] << endl;
     
@@ -89,8 +118,16 @@ for (int j = 0; j < N0; ++j){
    
 	// Generate a Poisson random number with mu = emeannumber //////////
 	
+	//Decaimiento Fe55
+
+
+	
+	
+	
 	TRandom3 re(0); //seed=0  ->  different numbers every time
-	h4->Fill(electrons[j] = re.Poisson(emeannumber)); 
+	//h4->Fill(electrons[j] = re.Poisson(emeannumber[j])); 
+	electrons[j] = re.Poisson(emeannumber[j]);
+	
 	//cout << "#e = "<< electrons[j] << endl;		
 	
 	////////////////////////////////////////////////////////////////////
@@ -100,7 +137,9 @@ for (int j = 0; j < N0; ++j){
     
     AA[j]=1;
     BB[j]=1; //This parameter could depend on the energy
-    h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5)); 
+    //h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5)); 
+    sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5);
+    
     //cout << "sigma = "<< sigma[j] << endl;	
     
     ////////////////////////////////////////////////////////////////////
@@ -118,7 +157,8 @@ for (int j = 0; j < N0; ++j){
 		// rcx is the number of excited electrons after difussion     
 		// Generate a gaussian random number with mean xx[j]
 		TRandom3 rcx(0); //seed=0  ->  different numbers every time
-		h6->Fill(chargex[i] = rcx.Gaus(xx[j],sigma[j])); 
+		//h6->Fill(chargex[i] = rcx.Gaus(xx[j],sigma[j])); 
+		chargex[i] = rcx.Gaus(xx[j],sigma[j]);
 		//cout << endl;
 		//cout << "x on CCD = "<< chargex[i] << endl;	
 						
@@ -126,7 +166,8 @@ for (int j = 0; j < N0; ++j){
 		// rcy is the number of excited electrons after difussion     
 		// Generate a gaussian random number with mean yy[j]
 		TRandom3 rcy(0); //seed=0  ->  different numbers every time
-		h7->Fill(chargey[i] = rcy.Gaus(yy[j],sigma[j]));
+		//h7->Fill(chargey[i] = rcy.Gaus(yy[j],sigma[j]));
+		chargey[i] = rcy.Gaus(yy[j],sigma[j]);
 		//cout << "y on CCD = "<< chargey[j] << endl;	
 	}
 
@@ -144,7 +185,7 @@ for (int i = 0; i < electrons[j]; ++i){
 
 
 // Add dark Current ////////////////////////////////////////////////////
-void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL){
+void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL, int darkC){
 
 	for (int i = 0; i < darkC; ++i){
 		
@@ -252,7 +293,8 @@ cout<< "Starting to save fits files ..."<<endl;
 
 
 // Plot histograms /////////////////////////////////////////////////////
-void hist(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7){
+
+/*void hist(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7){
 if (N0>99){
 	TCanvas* canvas = new TCanvas("canvas","canvas",10,10,700,800);
 	canvas->Divide(3,3);
@@ -281,13 +323,24 @@ if (N0>99){
 }
 
 
-}
+}*/
 
 
-int main(){
+
+
+int main(int argc, char* argv[]){
 	
 TStopwatch t; // time counter
 t.Start();
+
+int N0 = atoi(argv[1]); //N0 represents the number of X-rays that interact with the CCD ////////
+int darkC = atoi(argv[2]); // Dark Current total events
+
+
+int tau=50;  // skin depth
+
+// To check distributions run N0=100000, emeannumber = 10.
+
 
 double*  pix_int = new double[sizeArray];   // pixels array with real interactions
 double*  pix_dc = new double[sizeArray];    // pixels array with dark current
@@ -298,7 +351,7 @@ for (int i = 0; i < sizeArray; ++i) pix_dc[i]=0;
 for (int i = 0; i < sizeArray; ++i) pix_total[i]=0; 
 
 
-
+/* Saco esto porque tengo que meter emeannumber en interaction
 // Book 1D-histograms //////////////////////////////////////////////////
 	int binnumber = N0/5;
 	
@@ -311,6 +364,9 @@ for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 	auto h5 = new TH1D("h5","sigma",binnumber,-tau/10,tau/2);
 	auto h6 = new TH1D("h6","spot x",binnumber,-xSize/2,3*xSize/2);
 	auto h7 = new TH1D("h7","spot y",binnumber,-ySize/2,3*ySize/2);
+*/
+
+
 
 // CCD - Interactions Only
 	TCanvas *ch2p2 = new TCanvas("ch2p2","ch2p2",30*nx,30*ny);
@@ -334,10 +390,11 @@ for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 
 
 // This loop runs over each X-ray interaction //////////////////////////
-interaction(h1,h2,h3,h4,h5,h6,h7, h2p_int, h2p_TOTAL);
+//interaction(h1,h2,h3,h4,h5,h6,h7, h2p_int, h2p_TOTAL);
+interaction(h2p_int, h2p_TOTAL,tau, N0);
 
 // Add dark Current ////////////////////////////////////////////////////
-addDC(h2p_DC, h2p_TOTAL);
+addDC(h2p_DC, h2p_TOTAL, darkC);
 
 cout<< "MC simulations finished. "<<endl;
 
