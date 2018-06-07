@@ -14,13 +14,15 @@ André -> Cambios de DC por linea en toyMont.C->HECHO
 Dario -> Modelado de la difusion en toyMC.C ->HECHO 
 Mariano -> Scripts para familiarizarse con ROOT ->HECHO 
 
-emeannumber vs e (5,9 y 6,5 keV) (151/100 20,5/100)
+emeannumber vs e (5,9 y 6,5 keV) (151/100 20,5/100) ->HECHO
 
-meter alfa y beta en interaction asociados a AA y BB para matchear con realidad
 
-modificar main(argc argv)
+meter alfa y beta en interaction asociados a AA y BB para matchear con realidad ->HECHO
 
-modificar codigo para que el save etiquete en funcion de la entrada de barrido
+modificar main(argc argv) ->HECHO 
+
+modificar codigo para que el save etiquete en funcion de la entrada de barrido  ->HECHO 
+
 
 modificar .py para barrer grilla de parametros alfa y beta (y/o tau)
 

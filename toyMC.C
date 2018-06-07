@@ -45,7 +45,7 @@ long fpixel[2] = {1,1};
 
 // This loop runs over each X-ray interaction //////////////////////////
 //void interaction(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7,  TH2F *h2p_int,  TH2F *h2p_TOTAL){
-void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int tau, int N0){
+void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int tau, int N0, int A, int B){
 
 vector<double> emeannumber(N0); //emeannumber: mean number of electrons generates by a X-ray //////////
 
@@ -55,8 +55,10 @@ TRandom3 kalfa2(0);
 double alfa2= kalfa2.Uniform(0,1);
 TRandom3 kalfa1(0);
 double alfa1= kalfa1.Uniform(0,1);
-TRandom3 kbeta(0);
-double beta= kbeta.Uniform(0,1);
+TRandom3 kbeta3(0);
+double beta3= kbeta3.Uniform(0,1);
+TRandom3 kbeta5(0);
+double beta5= kbeta5.Uniform(0,1);
 
 if (alfa2<0.51){
 	emeannumber[i]=5887.65; //unidades en eV
@@ -66,14 +68,14 @@ if (alfa1<1.00){
 	emeannumber[i]=5898.75; //unidades en eV
 	i++;
 }
-if (beta<0.205){
+if (beta3<0.205){
 	emeannumber[i]=6490.45; //unidades en eV
 	i++;
 }
-//if (kbeta???<0.205){
-//	i++;
-//	emeanumber[j]=6535.2; //unidades en eV
-//}
+if (beta5<0.205){
+	i++;
+	emeannumber[i]=6535.2; //unidades en eV
+}
 
 }
 
@@ -84,8 +86,10 @@ for (int j = 0; j < N0; ++j){
 	vector<double> yy(N0);
 	vector<double> zz(N0);                                               
 
-	vector<double> AA(N0); //constante 1 formula sigma cuadrado = 2D/a1*nu
-	vector<double> BB(N0); //constante 2 formula sigma cuadrado a1/E(y_w)
+
+
+	// vector<double> AA(N0); //constante 1 formula sigma cuadrado = 2D/a1*nu
+	// vector<double> BB(N0); //constante 2 formula sigma cuadrado a1/E(y_w)
 	
 	vector<double> electrons(N0);
     vector<double> sigma(N0);
@@ -135,10 +139,8 @@ for (int j = 0; j < N0; ++j){
     // proportional to the square root of zz depth
     // AA y BB son variables medibles sacadas del trabajo que nos paso Javier T
     
-    AA[j]=1;
-    BB[j]=1; //This parameter could depend on the energy
     //h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5)); 
-    sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5);
+    sigma[j] = pow(A*log(B*zz[j]+1),0.5);
     
     //cout << "sigma = "<< sigma[j] << endl;	
     
@@ -222,7 +224,7 @@ for (int i = 0; i < nx; ++i) {
 
 
 // Save into fits
-void save(int nx, int ny, int SizeArray, double*  pix_int, double*  pix_dc, double*  pix_total){
+void save(int nx, int ny, int SizeArray, double*  pix_int, double*  pix_dc, double*  pix_total, int A, int B){
 
 
 
@@ -236,11 +238,11 @@ cout<< "Starting to save fits files ..."<<endl;
 
 ///////////////////////Real Interactions ///////////////////////////////	
         
-	std::string outMeanFitsFile1 = "real_interactions.fits";
+	std::string outMeanFitsFile1 = "real_interactions_A=";
     
     fitsfile *outClusterptr1;
     
-    fits_create_file(&outClusterptr1, outMeanFitsFile1.c_str(), &status);
+    fits_create_file(&outClusterptr1, (outMeanFitsFile1+ std::to_string(A)+"_B="+ std::to_string(B)+".fits").c_str(), &status);
  
 	fits_create_img(outClusterptr1, -32, naxis, naxesOut, &status);
     
@@ -253,11 +255,11 @@ cout<< "Starting to save fits files ..."<<endl;
 
 ////////////////////////// Dark Current ////////////////////////////////
 		
-	std::string outMeanFitsFile2 = "dc.fits";
+	std::string outMeanFitsFile2 = "dc_A=";
     
     fitsfile *outClusterptr2;
     
-    fits_create_file(&outClusterptr2, outMeanFitsFile2.c_str(), &status);
+    fits_create_file(&outClusterptr2, (outMeanFitsFile2+ std::to_string(A)+"_B="+ std::to_string(B)+".fits").c_str(), &status);
 
 	fits_create_img(outClusterptr2, -32, naxis, naxesOut, &status);
     
@@ -270,11 +272,11 @@ cout<< "Starting to save fits files ..."<<endl;
     
 ///////////////  Real Interactions + Dark Current///////////////////////
 	
-	std::string outMeanFitsFile3 = "real_interactions+dc.fits";
+	std::string outMeanFitsFile3 = "real_interactions+dc_A=";
     
     fitsfile *outClusterptr3;
     
-    fits_create_file(&outClusterptr3, outMeanFitsFile3.c_str(), &status); 
+    fits_create_file(&outClusterptr3, (outMeanFitsFile3+ std::to_string(A)+"_B="+ std::to_string(B)+".fits").c_str(), &status); 
 
 	fits_create_img(outClusterptr3, -32, naxis, naxesOut, &status);
     
@@ -335,7 +337,8 @@ t.Start();
 
 int N0 = atoi(argv[1]); //N0 represents the number of X-rays that interact with the CCD ////////
 int darkC = atoi(argv[2]); // Dark Current total events
-
+int A = atoi(argv[3]); //first parameter to fit (2D/a1*nu)
+int B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
 
 int tau=50;  // skin depth
 
@@ -391,7 +394,7 @@ for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 
 // This loop runs over each X-ray interaction //////////////////////////
 //interaction(h1,h2,h3,h4,h5,h6,h7, h2p_int, h2p_TOTAL);
-interaction(h2p_int, h2p_TOTAL,tau, N0);
+interaction(h2p_int, h2p_TOTAL,tau, N0, A, B);
 
 // Add dark Current ////////////////////////////////////////////////////
 addDC(h2p_DC, h2p_TOTAL, darkC);
@@ -402,7 +405,7 @@ cout<< "MC simulations finished. "<<endl;
 pix(pix_int,pix_dc,pix_total, h2p_int, h2p_DC, h2p_TOTAL);
 
 // Save into fits
-save(nx, ny, sizeArray, pix_int, pix_dc, pix_total);
+save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, A ,B);
 
 // Histograms (not checked)
 // hist(h1,h2,h3,h4,h5,h6,h7);
