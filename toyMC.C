@@ -32,7 +32,6 @@ using namespace std;
 
 
 
-
 // CCD size. Real dimension: 4126 x 866.
 int nx = 20;            // Number of pixels in x-direction
 int ny = 20;            // Number of pixels in y-direction
@@ -88,8 +87,37 @@ for (int j = 0; j < N0; ++j){
 
 
 
+
+
+	// Para yN = 250 µm, ND < 6 × 1011 cm−3, y para yN = 675 µm, ND < 1;9 × 1011 cm−3 donde
+	// donde yN es el espesor de la CCD e ND es el dopaje de dadores (miguel)
+	
+	// permitividad relativa silicio 11.68 (wikipedia)
+	// permitivdad silicio 11.68 * 8.85×10^−12 F/m (wikipedia)
+	// carga electron  −1,6× 10^−19 C (also wikipedia)
+	
+	// a1= (( 6 × 10^5 m−3 * −1,6× 10^−19 C ))  / (( 11.68 * 8.85×10^−12 F/m  ))	 (para yN=250um)
+	// unidades de a1= V/m^2
+
+	// diffusion coeficient silicon = k T µe / q  donde µe(uh) es la movilidad de los electrones (huecos)
+	// unidades de difusion m^2/t
+	// k= 1.38064852(79)×10−23 J K^-1
+	// T= 120 K
+	// q= carga electron = −1,6× 10^−19 C (also wikipedia)
+	// µh = 1,35 × 108 (120K)−2,20 * cm^2 (V s)^-1 (miguel fuente 51)
+	
+	// D= (( 1.38064852(79)×10−23 J K^-1 * 120 K * 1,35 × 108 (120K)−2,20 * cm^2 (V s)^-1  ) /  1,6× 10^−19 C  ))
+	
+	//nu es efectivamente uh
+	
+	// E(y_w) habria que relativamente estimarlo con un V fijo.
+
 	// vector<double> AA(N0); //constante 1 formula sigma cuadrado = 2D/a1*nu
 	// vector<double> BB(N0); //constante 2 formula sigma cuadrado a1/E(y_w)
+	
+	
+	
+	
 	
 	vector<double> electrons(N0);
     vector<double> sigma(N0);
