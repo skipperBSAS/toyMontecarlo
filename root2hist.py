@@ -1,6 +1,6 @@
-# Este codigo abre los outputXYZ.root
-# cuanta cuantos eventos tiene y los muestra en pantalla
-# y ademas guarda en outXYZ.dat el histograma de tamanio de clusters.
+# Este codigo abre los output_A_B.root
+# cuenta cuantos eventos tiene y los muestra en pantalla
+# y ademas guarda en out_A_B.dat el histograma de tamanio de clusters.
 
 import ROOT
 import os,sys
@@ -10,8 +10,8 @@ Hist = ROOT.TH1D("SizeClusterDist","",20,0,20)
 
 TreeName = "hitSumm"
 
-for j in range(1,3):
-	for i in range(1,3):
+for i in range(1,2):
+	for j in range(1,10):
 		FileName = "output_"+str(i)+"_"+str(j)+".root"
 		OutFile  = "out_"+str(i)+"_"+str(j)+".dat"
 		# Open TFile

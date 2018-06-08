@@ -29,21 +29,17 @@ Código escrito para simular:
 #include "TStopwatch.h"
 using namespace std;
 
-
-
-
 // CCD size. Real dimension: 4126 x 866.
-int nx = 20;            // Number of pixels in x-direction
-int ny = 20;            // Number of pixels in y-direction
+int nx = 4126;          // Number of pixels in x-direction
+int ny = 866;           // Number of pixels in y-direction
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
 int sizeArray =nx*ny;   // Total number of pixels in the CCD
 long fpixel[2] = {1,1};
 
-
 // This loop runs over each X-ray interaction //////////////////////////
-//void interaction(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7,  TH2F *h2p_int,  TH2F *h2p_TOTAL){
+// void interaction(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7,  TH2F *h2p_int,  TH2F *h2p_TOTAL){
 void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int tau, int N0, int A, int B){
 
 vector<double> emeannumber(N0); //emeannumber: mean number of electrons generates by a X-ray //////////
@@ -85,10 +81,6 @@ for (int j = 0; j < N0; ++j){
 	vector<double> yy(N0);
 	vector<double> zz(N0);                                               
 
-
-
-
-
 	// Para yN = 250 µm, ND < 6 × 1011 cm−3, y para yN = 675 µm, ND < 1;9 × 1011 cm−3 donde
 	// donde yN es el espesor de la CCD e ND es el dopaje de dadores (miguel)
 	
@@ -114,11 +106,7 @@ for (int j = 0; j < N0; ++j){
 
 	// vector<double> AA(N0); //constante 1 formula sigma cuadrado = 2D/a1*nu
 	// vector<double> BB(N0); //constante 2 formula sigma cuadrado a1/E(y_w)
-	
-	
-	
-	
-	
+
 	vector<double> electrons(N0);
     vector<double> sigma(N0);
     
@@ -150,11 +138,8 @@ for (int j = 0; j < N0; ++j){
    
 	// Generate a Poisson random number with mu = emeannumber //////////
 	
-	//Decaimiento Fe55
+	// Fe55 decay
 
-
-	
-	
 	
 	TRandom3 re(0); //seed=0  ->  different numbers every time
 	//h4->Fill(electrons[j] = re.Poisson(emeannumber[j])); 
@@ -235,26 +220,23 @@ for (int i = 0; i < nx; ++i) {
 		for (int j = 0; j < ny; ++j) {
 				   
 		   pix_int[j*nx+i]= h2p_int->GetBinContent(i+1,j+1);
-		   cout<<"bin: "<<i*nx+j<<" Interactions: "<<pix_int[i*nx+j]<<endl;
+		   //cout<<"bin: "<<i*nx+j<<" Interactions: "<<pix_int[i*nx+j]<<endl;
 		   
 		   pix_dc[j*nx+i]= h2p_DC->GetBinContent(i+1,j+1); 
-		   cout<<"bin: "<<i*nx+j<<" Dark Current: "<<pix_dc[i*nx+j]<<endl;
+		   //cout<<"bin: "<<i*nx+j<<" Dark Current: "<<pix_dc[i*nx+j]<<endl;
 		   
 		   pix_total[j*nx+i]= h2p_TOTAL->GetBinContent(i+1,j+1); 
-		   cout<<"bin: "<<i*nx+j<<" Interac + DC: "<<pix_total[i*nx+j]<<endl;
+		   //cout<<"bin: "<<i*nx+j<<" Interac + DC: "<<pix_total[i*nx+j]<<endl;
 		   
-		   cout<<endl;
+		   //cout<<endl;
 		   
 		}
 }
 
 }
 
-
 // Save into fits
 void save(int nx, int ny, int SizeArray, double*  pix_int, double*  pix_dc, double*  pix_total, int A, int B){
-
-
 
 cout<< "Starting to save fits files ..."<<endl;
 
@@ -266,7 +248,7 @@ cout<< "Starting to save fits files ..."<<endl;
 
 ///////////////////////Real Interactions ///////////////////////////////	
         
-	std::string outMeanFitsFile1 = "real_interactions_A=";
+	std::string outMeanFitsFile1 = "interactions_A=";
     
     fitsfile *outClusterptr1;
     
@@ -283,7 +265,7 @@ cout<< "Starting to save fits files ..."<<endl;
 
 ////////////////////////// Dark Current ////////////////////////////////
 		
-	std::string outMeanFitsFile2 = "dc_A=";
+	std::string outMeanFitsFile2 = "i_dark_current_A=";
     
     fitsfile *outClusterptr2;
     
@@ -300,7 +282,7 @@ cout<< "Starting to save fits files ..."<<endl;
     
 ///////////////  Real Interactions + Dark Current///////////////////////
 	
-	std::string outMeanFitsFile3 = "real_interactions+dc_A=";
+	std::string outMeanFitsFile3 = "interactions+dc_A=";
     
     fitsfile *outClusterptr3;
     
@@ -314,11 +296,7 @@ cout<< "Starting to save fits files ..."<<endl;
     
     cout<< "real_interactions+dc.fits saved "<<endl;
     
-
 ////////////////////////////////////////////////////////////////////////
-
-
-
 }
 
 
@@ -355,9 +333,6 @@ if (N0>99){
 
 }*/
 
-
-
-
 int main(int argc, char* argv[]){
 	
 TStopwatch t; // time counter
@@ -365,13 +340,13 @@ t.Start();
 
 int N0 = atoi(argv[1]); //N0 represents the number of X-rays that interact with the CCD ////////
 int darkC = atoi(argv[2]); // Dark Current total events
+
 int A = atoi(argv[3]); //first parameter to fit (2D/a1*nu)
 int B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
 
+B=1; // Esto lo agrego sólo para poder correr varios toys iguales usando el loop hecho en python
+
 int tau=50;  // skin depth
-
-// To check distributions run N0=100000, emeannumber = 10.
-
 
 double*  pix_int = new double[sizeArray];   // pixels array with real interactions
 double*  pix_dc = new double[sizeArray];    // pixels array with dark current
@@ -397,8 +372,6 @@ for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 	auto h7 = new TH1D("h7","spot y",binnumber,-ySize/2,3*ySize/2);
 */
 
-
-
 // CCD - Interactions Only
 	TCanvas *ch2p2 = new TCanvas("ch2p2","ch2p2",30*nx,30*ny);
 	
@@ -410,15 +383,11 @@ for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 	TH2F *h2p_DC = new TH2F("h2p_DC","",nx,-0,xSize,ny,0,ySize); //este es el histograma 2D. xbins, xmin, xmax y luego y idem.
 	h2p_DC->SetName("Pixels");
 	h2p_DC->SetTitle("CCD Dark Current");
-	 
+ 
 // CCD - Interactions + Dark Current
 	TH2F *h2p_TOTAL = new TH2F("h2p_TOTAL","",nx,-0,xSize,ny,0,ySize); //este es el histograma 2D. xbins, xmin, xmax y luego y idem.
 	h2p_TOTAL->SetName("Pixels");
 	h2p_TOTAL->SetTitle("CCD Interactions + Dark Current");
-
-
-
-
 
 // This loop runs over each X-ray interaction //////////////////////////
 //interaction(h1,h2,h3,h4,h5,h6,h7, h2p_int, h2p_TOTAL);
@@ -438,9 +407,6 @@ save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, A ,B);
 // Histograms (not checked)
 // hist(h1,h2,h3,h4,h5,h6,h7);
 
-
-
-
 // Show CCD 2D plot ////////////////////////////////////////////////////
 	ch2p2->Divide(2,2);
 	ch2p2->cd(1);
@@ -456,27 +422,8 @@ save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, A ,B);
 	ch2p2->Print(ps);
 	ch2p2->Print(ps+"]");
 
-
-
-
 	t.Stop();
 	t.Print(); 
+	
 return 0;
 }    //End
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
