@@ -17,24 +17,31 @@ Mariano -> Scripts para familiarizarse con ROOT ->HECHO
 emeannumber vs e (5,9 y 6,5 keV) (151/100 20,5/100) ->HECHO
 
 
-meter alfa y beta en interaction asociados a AA y BB para matchear con realidad ->HECHO
+Meter alfa y beta en interaction asociados a AA y BB para matchear con realidad ->HECHO
+Modificar main(argc argv) ->HECHO 
+Modificar codigo para que el save etiquete en funcion de la entrada de barrido  ->HECHO 
+Modificar .py para barrer grilla de parametros alfa y beta ->HECHO 
 
-modificar main(argc argv) ->HECHO 
+Hacer un vector de taus dentro de toyMC, estudiar dependencia con la Energía.
+Hacer histogramas con barras de error para:
+	Tamaño de clusters
+	Tamaño de clusters condicionado por carga
+Hacer código que compare histogramas de tamaño de cluster: exp vs. toyMC.
+Pensar y escribir código para optimización automática de parámetros del toyMC
 
-modificar codigo para que el save etiquete en funcion de la entrada de barrido  ->HECHO 
+Hacer histograma de sigma, ajustar por gaussiana y determinar media y varianza para diferentes valores de tau.
+Luego graficar media y varianza como función de tau.	
 
-
-modificar .py para barrer grilla de parametros alfa y beta (y/o tau)
-
-COMPARAR TAMAÑO DE CLUSTERS
-1er objetivo desde una grilla
-2do objetivo minimizacion inteligente 
-
+Poner corte en zz<250 um. Máxima profundidad de interacción.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tareas de analisis (sobre datos reales o de Monte Carlo)
 
-Analizar medicines de DC.
+Analizar mediciones de DC.
+
+Hacer histograma de tamaño de clusters con un root file de mucha estadística.
+Usar xbar e ybar para eliminar clusters en el borde.
+Usar variable e para eliminar clusters pegoteados.
 
 Usando toyMont:
 Calcular corrimientos en la distribucion de tamaño de clusters en función del nivel de DC.
@@ -45,21 +52,15 @@ Ajustar parámetros físicos hasta "recuperar" la distribución de clusters de m
 Usando clustering:
 Estudiar el cambio en la distribución de clusters por agregado de DC. ->EN CURSO
 
-Sumar estadistica de rootfiles (ricardo)
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tareas de Hardware (para realizar en forma remota)
 
-Pensar en pruebas para estudiar el cambio en la ganancia. ->EN CURSO
+Hacer mediciones para estudiar el cambio en la ganancia. ->EN CURSO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Preguntas a Javier/Andre
 
 Como sabe clustering distinguir fondo de DC siendo que fondo no es constante y encontramos 900 eventos de e=1
-
-Por que ds9 esta calibrado energicamente
-
-cual es el voltaje del pozo?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Bibliografia
