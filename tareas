@@ -22,7 +22,8 @@ Modificar main(argc argv) ->HECHO
 Modificar codigo para que el save etiquete en funcion de la entrada de barrido  ->HECHO 
 Modificar .py para barrer grilla de parametros alfa y beta ->HECHO 
 
-Hacer un vector de taus dentro de toyMC, estudiar dependencia con la Energía.
+Hacer un vector de taus dentro de toyMC, estudiar dependencia con la Energía. ->HECHO
+
 Hacer histogramas con barras de error para:
 	Tamaño de clusters
 	Tamaño de clusters condicionado por carga
@@ -30,9 +31,14 @@ Hacer código que compare histogramas de tamaño de cluster: exp vs. toyMC.
 Pensar y escribir código para optimización automática de parámetros del toyMC
 
 Hacer histograma de sigma, ajustar por gaussiana y determinar media y varianza para diferentes valores de tau.
+
 Luego graficar media y varianza como función de tau.	
 
 Poner corte en zz<250 um. Máxima profundidad de interacción.
+
+Calcular N0(t): para ello agarrar las 128 mediciones fits de andre, buscar el tiempo de exposición y calcular el nro de entries con carga mayor a 3 o 4. Esto no quitaria el sesgo de qeu una DC caiga en uncluster de itneraccion pero ya fue.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tareas de analisis (sobre datos reales o de Monte Carlo)

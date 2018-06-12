@@ -40,9 +40,12 @@ long fpixel[2] = {1,1};
 
 // This loop runs over each X-ray interaction //////////////////////////
 // void interaction(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7,  TH2F *h2p_int,  TH2F *h2p_TOTAL){
-void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int tau, int N0, int A, int B){
+void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int N0, int A, int B){
 
 vector<double> emeannumber(N0); //emeannumber: mean number of electrons generates by a X-ray //////////
+vector<double> tau(N0); //emeannumber: mean number of electrons generates by a X-ray //////////
+
+
 
 for (int i = 0; i < N0; ++i){
 
@@ -57,19 +60,23 @@ double beta5= kbeta5.Uniform(0,1);
 
 if (alfa2<0.51){
 	emeannumber[i]=5887.65; //unidades en eV
+	tau[i]=58;
 	i++;
 }
 if (alfa1<1.00){
 	emeannumber[i]=5898.75; //unidades en eV
+	tau[i]=58;
 	i++;
 }
 if (beta3<0.205){
 	emeannumber[i]=6490.45; //unidades en eV
+	tau[i]=58*(6.5/5.9); // calculo de energía a primer orden
 	i++;
 }
 if (beta5<0.205){
 	i++;
 	emeannumber[i]=6535.2; //unidades en eV
+	tau[i]=58*(6.5/5.9); // calculo de energía a primer orden
 }
 
 }
@@ -127,7 +134,7 @@ for (int j = 0; j < N0; ++j){
 
     TRandom3 rz(0); //  seed=0  ->  different numbers every time
     //h3->Fill(zz[j] = rz.Exp(tau));
-	zz[j] = rz.Exp(tau);
+	zz[j] = rz.Exp(tau[j]);
 	//cout << endl;
 	//cout << "x = "<< xx[j] << " , " << "y = "<< yy[j] << " , " << "z = "<< zz[j] << endl;
 
@@ -378,7 +385,7 @@ int B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
 
 B=1; // Esto lo agrego sólo para poder correr varios toys iguales usando el loop hecho en python
 
-int tau=50;  // skin depth
+//int tau=50;  // skin depth
 
 double*  pix_int = new double[sizeArray];   // pixels array with real interactions
 double*  pix_dc = new double[sizeArray];    // pixels array with dark current
