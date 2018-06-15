@@ -1,0 +1,132 @@
+python loop_MC.py 
+./toyMC.exe 100 0 1 1 && ./toyMC.exe 100 0 1 2 && ./toyMC.exe 100 0 1 3 && ./toyMC.exe 100 0 1 4 && ./toyMC.exe 100 0 1 5 && ./toyMC.exe 100 0 1 6 && ./toyMC.exe 100 0 1 7 && ./toyMC.exe 100 0 1 8 && ./toyMC.exe 100 0 1 9 &
+dario@dario-PC ~/CCD/toy $ MC simulations finished. 
+Starting to save fits files ...
+real_interactions.fits saved 
+dc.fits saved 
+real_interactions+dc.fits saved 
+Info in <TCanvas::Print>: pdf file CCD.pdf has been created
+Info in <TCanvas::Print>: Current canvas added to pdf file CCD.pdf
+Info in <TCanvas::Print>: Current canvas added to pdf file CCD.pdf
+Real time 0:00:05, CP time 5.170
+*** Error in `./toyMC.exe': munmap_chunk(): invalid pointer: 0x0000000001ccfc40 ***
+======= Backtrace: =========
+/lib/x86_64-linux-gnu/libc.so.6(+0x777e5)[0x7f01fe1d17e5]
+/lib/x86_64-linux-gnu/libc.so.6(cfree+0x1a8)[0x7f01fe1de698]
+/home/dario/root5/lib/libMathCore.so(_ZN7TRandomD2Ev+0x35)[0x7f01ff1bc3a5]
+./toyMC.exe(_Z11interactionP4TH2FS0_iii+0x3a5)[0x413c9b]
+./toyMC.exe(main+0x490)[0x415a29]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf0)[0x7f01fe17a830]
+./toyMC.exe(_start+0x29)[0x413829]
+======= Memory map: ========
+00400000-00530000 r-xp 00000000 08:01 5767207                            /home/dario/CCD/toy/toyMC.exe
+0072f000-00731000 r--p 0012f000 08:01 5767207                            /home/dario/CCD/toy/toyMC.exe
+00731000-00732000 rw-p 00131000 08:01 5767207                            /home/dario/CCD/toy/toyMC.exe
+00732000-0079b000 rw-p 00000000 00:00 0 
+01593000-01cf0000 rw-p 00000000 00:00 0                                  [heap]
+7f01fbbc0000-7f01fbbcb000 r-xp 00000000 08:01 43258310                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f01fbbcb000-7f01fbdca000 ---p 0000b000 08:01 43258310                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f01fbdca000-7f01fbdcb000 r--p 0000a000 08:01 43258310                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f01fbdcb000-7f01fbdcc000 rw-p 0000b000 08:01 43258310                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f01fbdcc000-7f01fbdd2000 rw-p 00000000 00:00 0 
+7f01fbdd2000-7f01fbddd000 r-xp 00000000 08:01 43258320                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f01fbddd000-7f01fbfdc000 ---p 0000b000 08:01 43258320                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f01fbfdc000-7f01fbfdd000 r--p 0000a000 08:01 43258320                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f01fbfdd000-7f01fbfde000 rw-p 0000b000 08:01 43258320                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f01fbfde000-7f01fbff4000 r-xp 00000000 08:01 43258304                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f01fbff4000-7f01fc1f3000 ---p 00016000 08:01 43258304                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f01fc1f3000-7f01fc1f4000 r--p 00015000 08:01 43258304                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f01fc1f4000-7f01fc1f5000 rw-p 00016000 08:01 43258304                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f01fc1f5000-7f01fc1f7000 rw-p 00000000 00:00 0 
+7f01fc1f7000-7f01fc1ff000 r-xp 00000000 08:01 43258306                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f01fc1ff000-7f01fc3fe000 ---p 00008000 08:01 43258306                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f01fc3fe000-7f01fc3ff000 r--p 00007000 08:01 43258306                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f01fc3ff000-7f01fc400000 rw-p 00008000 08:01 43258306                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f01fc400000-7f01fc444000 r-xp 00000000 08:01 5131024                    /home/dario/root5/lib/libThread.so
+7f01fc444000-7f01fc643000 ---p 00044000 08:01 5131024                    /home/dario/root5/lib/libThread.so
+7f01fc643000-7f01fc647000 r--p 00043000 08:01 5131024                    /home/dario/root5/lib/libThread.so
+7f01fc647000-7f01fc648000 rw-p 00047000 08:01 5131024                    /home/dario/root5/lib/libThread.so
+7f01fc648000-7f01fc649000 rw-p 00000000 00:00 0 
+7f01fc649000-7f01fc92b000 r-xp 00000000 08:01 5131074                    /home/dario/root5/lib/libRIO.so
+7f01fc92b000-7f01fcb2b000 ---p 002e2000 08:01 5131074                    /home/dario/root5/lib/libRIO.so
+7f01fcb2b000-7f01fcb36000 r--p 002e2000 08:01 5131074                    /home/dario/root5/lib/libRIO.so
+7f01fcb36000-7f01fcb39000 rw-p 002ed000 08:01 5131074                    /home/dario/root5/lib/libRIO.so
+7f01fcb39000-7f01fcb3c000 rw-p 00000000 00:00 0 
+7f01fcb3c000-7f01fcd72000 r-xp 00000000 08:01 5131004                    /home/dario/root5/lib/libGraf.so
+7f01fcd72000-7f01fcf71000 ---p 00236000 08:01 5131004                    /home/dario/root5/lib/libGraf.so
+7f01fcf71000-7f01fcf84000 r--p 00235000 08:01 5131004                    /home/dario/root5/lib/libGraf.so
+7f01fcf84000-7f01fcf89000 rw-p 00248000 08:01 5131004                    /home/dario/root5/lib/libGraf.so
+7f01fcf89000-7f01fcf97000 rw-p 00000000 00:00 0 
+7f01fcf97000-7f01fd1b1000 r-xp 00000000 08:01 5130924                    /home/dario/root5/lib/libMatrix.so
+7f01fd1b1000-7f01fd3b0000 ---p 0021a000 08:01 5130924                    /home/dario/root5/lib/libMatrix.so
+7f01fd3b0000-7f01fd3b9000 r--p 00219000 08:01 5130924                    /home/dario/root5/lib/libMatrix.so
+7f01fd3b9000-7f01fd3bd000 rw-p 00222000 08:01 5130924                    /home/dario/root5/lib/libMatrix.so
+7f01fd3bd000-7f01fd3c2000 rw-p 00000000 00:00 0 
+7f01fd3c2000-7f01fd5fd000 r-xp 00000000 08:01 5131021                    /home/dario/root5/lib/libCint.so
+7f01fd5fd000-7f01fd7fc000 ---p 0023b000 08:01 5131021                    /home/dario/root5/lib/libCint.so
+7f01fd7fc000-7f01fd7ff000 r--p 0023a000 08:01 5131021                    /home/dario/root5/lib/libCint.so
+7f01fd7ff000-7f01fd804000 rw-p 0023d000 08:01 5131021                    /home/dario/root5/lib/libCint.so
+7f01fd804000-7f01fdd3c000 rw-p 00000000 00:00 0 
+7f01fdd3c000-7f01fdd3f000 r-xp 00000000 08:01 43258235                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f01fdd3f000-7f01fdf3e000 ---p 00003000 08:01 43258235                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f01fdf3e000-7f01fdf3f000 r--p 00002000 08:01 43258235                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f01fdf3f000-7f01fdf40000 rw-p 00003000 08:01 43258235                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f01fdf40000-7f01fdf59000 r-xp 00000000 08:01 43258402                   /lib/x86_64-linux-gnu/libz.so.1.2.8
+7f01fdf59000-7f01fe158000 ---p 00019000 08:01 43258402                   /lib/x86_64-linux-gnu/libz.so.1.2.8
+7f01fe158000-7f01fe159000 r--p 00018000 08:01 43258402                   /lib/x86_64-linux-gnu/libz.so.1.2.8
+7f01fe159000-7f01fe15a000 rw-p 00019000 08:01 43258402                   /lib/x86_64-linux-gnu/libz.so.1.2.8
+7f01fe15a000-7f01fe31a000 r-xp 00000000 08:01 43258211                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f01fe31a000-7f01fe51a000 ---p 001c0000 08:01 43258211                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f01fe51a000-7f01fe51e000 r--p 001c0000 08:01 43258211                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f01fe51e000-7f01fe520000 rw-p 001c4000 08:01 43258211                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f01fe520000-7f01fe524000 rw-p 00000000 00:00 0 
+7f01fe524000-7f01fe53c000 r-xp 00000000 08:01 43258357                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f01fe53c000-7f01fe73b000 ---p 00018000 08:01 43258357                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f01fe73b000-7f01fe73c000 r--p 00017000 08:01 43258357                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f01fe73c000-7f01fe73d000 rw-p 00018000 08:01 43258357                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f01fe73d000-7f01fe741000 rw-p 00000000 00:00 0 
+7f01fe741000-7f01fe757000 r-xp 00000000 08:01 43258249                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f01fe757000-7f01fe956000 ---p 00016000 08:01 43258249                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f01fe956000-7f01fe957000 rw-p 00015000 08:01 43258249                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f01fe957000-7f01feac9000 r-xp 00000000 08:01 48759336                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21
+7f01feac9000-7f01fecc9000 ---p 00172000 08:01 48759336                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21
+7f01fecc9000-7f01fecd3000 r--p 00172000 08:01 48759336                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21
+7f01fecd3000-7f01fecd5000 rw-p 0017c000 08:01 48759336                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21
+7f01fecd5000-7f01fecd9000 rw-p 00000000 00:00 0 
+7f01fecd9000-7f01fede1000 r-xp 00000000 08:01 43258281                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f01fede1000-7f01fefe0000 ---p 00108000 08:01 43258281                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f01fefe0000-7f01fefe1000 r--p 00107000 08:01 43258281                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f01fefe1000-7f01fefe2000 rw-p 00108000 08:01 43258281                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f01fefe2000-7f01ff22b000 r-xp 00000000 08:01 5131029                    /home/dario/root5/lib/libMathCore.so
+7f01ff22b000-7f01ff42a000 ---p 00249000 08:01 5131029                    /home/dario/root5/lib/libMathCore.so
+7f01ff42a000-7f01ff434000 r--p 00248000 08:01 5131029                    /home/dario/root5/lib/libMathCore.so
+7f01ff434000-7f01ff438000 rw-p 00252000 08:01 5131029                    /home/dario/root5/lib/libMathCore.so
+7f01ff438000-7f01ff441000 rw-p 00000000 00:00 0 
+7f01ff441000-7f01ff522000 r-xp 00000000 08:01 5131044                    /home/dario/root5/lib/libGpad.so
+7f01ff522000-7f01ff722000 ---p 000e1000 08:01 5131044                    /home/dario/root5/lib/libGpad.so
+7f01ff722000-7f01ff72b000 r--p 000e1000 08:01 5131044                    /home/dario/root5/lib/libGpad.so
+7f01ff72b000-7f01ff72d000 rw-p 000ea000 08:01 5131044                    /home/dario/root5/lib/libGpad.so
+7f01ff72d000-7f01ff72f000 rw-p 00000000 00:00 0 
+7f01ff72f000-7f01ffc65000 r-xp 00000000 08:01 5131120                    /home/dario/root5/lib/libHist.so
+7f01ffc65000-7f01ffe64000 ---p 00536000 08:01 5131120                    /home/dario/root5/lib/libHist.so
+7f01ffe64000-7f01ffe8d000 r--p 00535000 08:01 5131120                    /home/dario/root5/lib/libHist.so
+7f01ffe8d000-7f01ffe94000 rw-p 0055e000 08:01 5131120                    /home/dario/root5/lib/libHist.so
+7f01ffe94000-7f01ffe9e000 rw-p 00000000 00:00 0 
+7f01ffe9e000-7f02005b6000 r-xp 00000000 08:01 5130988                    /home/dario/root5/lib/libCore.so
+7f02005b6000-7f02007b6000 ---p 00718000 08:01 5130988                    /home/dario/root5/lib/libCore.so
+7f02007b6000-7f02007e0000 r--p 00718000 08:01 5130988                    /home/dario/root5/lib/libCore.so
+7f02007e0000-7f02007ec000 rw-p 00742000 08:01 5130988                    /home/dario/root5/lib/libCore.so
+7f02007ec000-7f0200821000 rw-p 00000000 00:00 0 
+7f0200821000-7f0200847000 r-xp 00000000 08:01 43258183                   /lib/x86_64-linux-gnu/ld-2.23.so
+7f0200983000-7f0200a24000 rw-p 00000000 00:00 0 
+7f0200a42000-7f0200a46000 rw-p 00000000 00:00 0 
+7f0200a46000-7f0200a47000 r--p 00025000 08:01 43258183                   /lib/x86_64-linux-gnu/ld-2.23.so
+7f0200a47000-7f0200a48000 rw-p 00026000 08:01 43258183                   /lib/x86_64-linux-gnu/ld-2.23.so
+7f0200a48000-7f0200a49000 rw-p 00000000 00:00 0 
+7ffd8da6c000-7ffd8da90000 rw-p 00000000 00:00 0                          [stack]
+7ffd8db01000-7ffd8db03000 r--p 00000000 00:00 0                          [vvar]
+7ffd8db03000-7ffd8db05000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+Aborted (core dumped)
+
+

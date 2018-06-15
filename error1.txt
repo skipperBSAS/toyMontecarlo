@@ -1,0 +1,32 @@
+ *** Break *** segmentation violation
+
+
+
+===========================================================
+There was a crash.
+This is the entire stack trace of all threads:
+===========================================================
+#0  0x00007f42f02b007a in __GI___waitpid (pid=4727, stat_loc=stat_loc
+entry=0x7ffe3699d580, options=options
+entry=0) at ../sysdeps/unix/sysv/linux/waitpid.c:29
+#1  0x00007f42f0228fbb in do_system (line=<optimized out>) at ../sysdeps/posix/system.c:148
+#2  0x00007f42f2109973 in TUnixSystem::StackTrace() () from /home/dario/root5/lib/libCore.so
+#3  0x00007f42f210b59c in TUnixSystem::DispatchSignals(ESignals) () from /home/dario/root5/lib/libCore.so
+#4  <signal handler called>
+#5  ffclos (fptr=0x2d, status=0x7ffe3699fbd0) at cfileio.c:6548
+#6  0x0000000000415140 in save(int, int, int, double*, double*, double*, int, int) ()
+#7  0x0000000000415ad8 in main ()
+===========================================================
+
+
+The lines below might hint at the cause of the crash.
+If they do not help you then please submit a bug report at
+http://root.cern.ch/bugs. Please post the ENTIRE stack trace
+from above as an attachment in addition to anything else
+that might help us fixing this issue.
+===========================================================
+#5  ffclos (fptr=0x2d, status=0x7ffe3699fbd0) at cfileio.c:6548
+#6  0x0000000000415140 in save(int, int, int, double*, double*, double*, int, int) ()
+#7  0x0000000000415ad8 in main ()
+===========================================================
+

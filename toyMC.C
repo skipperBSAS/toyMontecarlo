@@ -30,13 +30,14 @@ Código escrito para simular:
 using namespace std;
 
 // CCD size. Real dimension: 4126 x 866.
-int nx = 500;          // Number of pixels in x-direction
-int ny = 50;           // Number of pixels in y-direction
+int nx = 500;            // Number of pixels in x-direction
+int ny = 50;             // Number of pixels in y-direction
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
 int sizeArray =nx*ny;   // Total number of pixels in the CCD
 long fpixel[2] = {1,1};
+double tau_Si = 58;        // reference value 58
 
 // This loop runs over each X-ray interaction //////////////////////////
 // void interaction(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7,  TH2F *h2p_int,  TH2F *h2p_TOTAL){
@@ -55,8 +56,6 @@ TRandom3 kbeta3(0);
 double beta3= kbeta3.Uniform(0,1);
 TRandom3 kbeta5(0);
 double beta5= kbeta5.Uniform(0,1);
-
-int tau_Si = 5000;  // reference number 58 um
 
 if (alfa2<0.51){
 	emeannumber[i]=5887.65; //unidades en eV
