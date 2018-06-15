@@ -43,7 +43,7 @@ long fpixel[2] = {1,1};
 void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int N0, int A, int B){
 
 vector<double> emeannumber(N0); //emeannumber: mean number of electrons generates by a X-ray //////////
-vector<double> tau(N0); //emeannumber: mean number of electrons generates by a X-ray //////////
+vector<double> tau(N0); // skin depth
 
 
 
@@ -160,7 +160,8 @@ for (int j = 0; j < N0; ++j){
     // AA y BB son variables medibles sacadas del trabajo que nos paso Javier T
 
     //h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5));
-    sigma[j] = pow(A*log(B*zz[j]+1),0.5);
+    //sigma[j] = pow(A*log(B*zz[j]+1),0.5);
+    sigma[j] = pow(A*log(zz[j]+1),0.5); // Sólo para correr varias veces el mismo toyMC
 
     //cout << "sigma = "<< sigma[j] << endl;
 
@@ -215,11 +216,9 @@ void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL, int darkC){
 		//int xdc=XDC.Uniform(0,xSize);
 		//TRandom3 YDC(0); //  seed=0  ->  different numbers every time
 		//int ydc=YDC.Uniform(0,ySize);
-
-
-
-	    ////double xdc =  rand() % xSize;
-        ////double ydc =  rand() % ySize;
+		
+	    //double xdc =  rand() % xSize;
+        //double ydc =  rand() % ySize;
         //h2p_DC->Fill(xdc,ydc);
         //h2p_TOTAL->Fill(xdc,ydc);
 
@@ -288,51 +287,31 @@ cout<< "Starting to save fits files ..."<<endl;
 ///////////////////////Real Interactions ///////////////////////////////
 
 	std::string outMeanFitsFile1 = "interactions_A=";
-
     fitsfile *outClusterptr1;
-
     fits_create_file(&outClusterptr1, (outMeanFitsFile1+ std::to_string(A)+"_B="+ std::to_string(B)+".fits").c_str(), &status);
-
 	fits_create_img(outClusterptr1, -32, naxis, naxesOut, &status);
-
     fits_write_pix(outClusterptr1, TDOUBLE, fpixel, sizeArray, pix_int, &status);
-
     fits_close_file(outClusterptr1,  &status);
-
     cout<< "real_interactions.fits saved "<<endl;
-
 
 ////////////////////////// Dark Current ////////////////////////////////
 
 	std::string outMeanFitsFile2 = "i_dark_current_A=";
-
     fitsfile *outClusterptr2;
-
     fits_create_file(&outClusterptr2, (outMeanFitsFile2+ std::to_string(A)+"_B="+ std::to_string(B)+".fits").c_str(), &status);
-
 	fits_create_img(outClusterptr2, -32, naxis, naxesOut, &status);
-
     fits_write_pix(outClusterptr2, TDOUBLE, fpixel, sizeArray, pix_dc, &status);
-
     fits_close_file(outClusterptr2,  &status);
-
     cout<< "dc.fits saved "<<endl;
-
 
 ///////////////  Real Interactions + Dark Current///////////////////////
 
 	std::string outMeanFitsFile3 = "interactions+dc_A=";
-
     fitsfile *outClusterptr3;
-
     fits_create_file(&outClusterptr3, (outMeanFitsFile3+ std::to_string(A)+"_B="+ std::to_string(B)+".fits").c_str(), &status);
-
 	fits_create_img(outClusterptr3, -32, naxis, naxesOut, &status);
-
     fits_write_pix(outClusterptr3, TDOUBLE, fpixel, sizeArray, pix_total, &status);
-
     fits_close_file(outClusterptr3,  &status);
-
     cout<< "real_interactions+dc.fits saved "<<endl;
 
 ////////////////////////////////////////////////////////////////////////
@@ -385,7 +364,6 @@ int B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
 
 B=1; // Esto lo agrego sólo para poder correr varios toys iguales usando el loop hecho en python
 
-//int tau=50;  // skin depth
 
 double*  pix_int = new double[sizeArray];   // pixels array with real interactions
 double*  pix_dc = new double[sizeArray];    // pixels array with dark current
@@ -430,7 +408,7 @@ for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 
 // This loop runs over each X-ray interaction //////////////////////////
 //interaction(h1,h2,h3,h4,h5,h6,h7, h2p_int, h2p_TOTAL);
-interaction(h2p_int, h2p_TOTAL,tau, N0, A, B);
+interaction(h2p_int, h2p_TOTAL,N0, A, B);
 
 // Add dark Current ////////////////////////////////////////////////////
 addDC(h2p_DC, h2p_TOTAL, darkC);
