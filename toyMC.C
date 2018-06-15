@@ -30,8 +30,8 @@ Código escrito para simular:
 using namespace std;
 
 // CCD size. Real dimension: 4126 x 866.
-int nx = 4126;          // Number of pixels in x-direction
-int ny = 866;           // Number of pixels in y-direction
+int nx = 500;          // Number of pixels in x-direction
+int ny = 50;           // Number of pixels in y-direction
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
@@ -45,8 +45,6 @@ void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int N0, int A, int B){
 vector<double> emeannumber(N0); //emeannumber: mean number of electrons generates by a X-ray //////////
 vector<double> tau(N0); // skin depth
 
-
-
 for (int i = 0; i < N0; ++i){
 
 TRandom3 kalfa2(0);
@@ -58,27 +56,28 @@ double beta3= kbeta3.Uniform(0,1);
 TRandom3 kbeta5(0);
 double beta5= kbeta5.Uniform(0,1);
 
+int tau_Si = 5000;  // reference number 58 um
+
 if (alfa2<0.51){
 	emeannumber[i]=5887.65; //unidades en eV
-	tau[i]=58;
+	tau[i]=tau_Si;
 	i++;
 }
 if (alfa1<1.00){
 	emeannumber[i]=5898.75; //unidades en eV
-	tau[i]=58;
+	tau[i]=tau_Si;
 	i++;
 }
 if (beta3<0.205){
 	emeannumber[i]=6490.45; //unidades en eV
-	tau[i]=58*(6.5/5.9); // calculo de energía a primer orden
+	tau[i]=tau_Si*(6.5/5.9); // corrección a primer orden con la Energía
 	i++;
 }
 if (beta5<0.205){
 	i++;
 	emeannumber[i]=6535.2; //unidades en eV
-	tau[i]=58*(6.5/5.9); // calculo de energía a primer orden
+	tau[i]=tau_Si*(6.5/5.9); // corrección a primer orden con la Energía
 }
-
 }
 
 for (int j = 0; j < N0; ++j){
@@ -107,7 +106,7 @@ for (int j = 0; j < N0; ++j){
 
 	// D= (( 1.38064852(79)×10−23 J K^-1 * 120 K * 1,35 × 108 (120K)−2,20 * cm^2 (V s)^-1  ) /  1,6× 10^−19 C  ))
 
-	//nu es efectivamente uh
+	// nu es efectivamente uh
 
 	// E(y_w) habria que relativamente estimarlo con un V fijo.
 
@@ -159,8 +158,8 @@ for (int j = 0; j < N0; ++j){
     // proportional to the square root of zz depth
     // AA y BB son variables medibles sacadas del trabajo que nos paso Javier T
 
-    //h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5));
-    //sigma[j] = pow(A*log(B*zz[j]+1),0.5);
+    // h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5));
+    // sigma[j] = pow(A*log(B*zz[j]+1),0.5);
     sigma[j] = pow(A*log(zz[j]+1),0.5); // Sólo para correr varias veces el mismo toyMC
 
     //cout << "sigma = "<< sigma[j] << endl;
@@ -211,7 +210,6 @@ for (int i = 0; i < electrons[j]; ++i){
 void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL, int darkC){
 
 	//for (int i = 0; i < darkC; ++i){
-
 		//TRandom3 XDC(0); //  seed=0  ->  different numbers every time
 		//int xdc=XDC.Uniform(0,xSize);
 		//TRandom3 YDC(0); //  seed=0  ->  different numbers every time
@@ -221,9 +219,8 @@ void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL, int darkC){
         //double ydc =  rand() % ySize;
         //h2p_DC->Fill(xdc,ydc);
         //h2p_TOTAL->Fill(xdc,ydc);
-
 	//}
-
+	
 		vector<int> xdc(darkC);
 		vector<int> ydc(darkC);
 
@@ -231,7 +228,6 @@ void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL, int darkC){
 
 		TRandom3 YDC(0); //  seed=0  ->  different numbers every time
 		ydc[i]=YDC.Uniform(0,ySize);
-
 	}
 
 		for (int i = 0; i < darkC; ++i){
@@ -240,6 +236,7 @@ void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL, int darkC){
 		xdc[i]=XDC.Uniform(0,xSize);
 
 	}
+	
 		for (int i = 0; i < darkC; ++i){
 
 		h2p_DC->Fill(xdc[i],ydc[i]);
@@ -264,15 +261,13 @@ for (int i = 0; i < nx; ++i) {
 
 		   pix_total[j*nx+i]= h2p_TOTAL->GetBinContent(i+1,j+1);
 		   //cout<<"bin: "<<i*nx+j<<" Interac + DC: "<<pix_total[i*nx+j]<<endl;
-
 		   //cout<<endl;
-
 		}
 }
 
 }
 
-// Save into fits
+// Save simulation as fits files
 
 void save(int nx, int ny, int SizeArray, double*  pix_int, double*  pix_dc, double*  pix_total, int A, int B){
 
@@ -362,12 +357,10 @@ int darkC = atoi(argv[2]); // Dark Current total events
 int A = atoi(argv[3]); //first parameter to fit (2D/a1*nu)
 int B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
 
-B=1; // Esto lo agrego sólo para poder correr varios toys iguales usando el loop hecho en python
-
-
 double*  pix_int = new double[sizeArray];   // pixels array with real interactions
 double*  pix_dc = new double[sizeArray];    // pixels array with dark current
 double*  pix_total = new double[sizeArray]; // pixels array with all information
+
 // Initialization
 for (int i = 0; i < sizeArray; ++i) pix_int[i]=0;
 for (int i = 0; i < sizeArray; ++i) pix_dc[i]=0;
@@ -443,4 +436,4 @@ save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, A ,B);
 	t.Print();
 
 return 0;
-}    //End
+}    // end
