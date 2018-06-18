@@ -1,3 +1,4 @@
+// Version 18/07/2018 - 16:30 hs
 /*
 Código escrito para simular:
 
@@ -29,15 +30,19 @@ Código escrito para simular:
 #include "TStopwatch.h"
 using namespace std;
 
-// CCD size. Real dimension: 4126 x 866.
-int nx = 500;            // Number of pixels in x-direction
-int ny = 50;             // Number of pixels in y-direction
+
+// Internal Parameters /////////////////////////////////////////////////
+// CCD size. Real size: 4126 x 866.
+int nx = 500;           // Number of pixels in x-direction
+int ny = 50;            // Number of pixels in y-direction
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
 int ySize = ny*pixSize; // y CCD size in microns
 int sizeArray =nx*ny;   // Total number of pixels in the CCD
+
+double tau_Si = 58;     // reference value 58 um
+
 long fpixel[2] = {1,1};
-double tau_Si = 58;        // reference value 58
 
 // This loop runs over each X-ray interaction //////////////////////////
 // void interaction(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7,  TH2F *h2p_int,  TH2F *h2p_TOTAL){
@@ -58,24 +63,24 @@ TRandom3 kbeta5(0);
 double beta5= kbeta5.Uniform(0,1);
 
 if (alfa2<0.51){
-	emeannumber[i]=5887.65; //unidades en eV
+	emeannumber[i]=5887.65; // [eV]
 	tau[i]=tau_Si;
 	i++;
 }
 if (alfa1<1.00){
-	emeannumber[i]=5898.75; //unidades en eV
+	emeannumber[i]=5898.75; // [eV]
 	tau[i]=tau_Si;
 	i++;
 }
 if (beta3<0.205){
-	emeannumber[i]=6490.45; //unidades en eV
-	tau[i]=tau_Si*(6.5/5.9); // corrección a primer orden con la Energía
+	emeannumber[i]=6490.45; // [eV]
+	tau[i]=tau_Si*(6.5/5.9); // a first order correction with energy ...
 	i++;
 }
 if (beta5<0.205){
 	i++;
-	emeannumber[i]=6535.2; //unidades en eV
-	tau[i]=tau_Si*(6.5/5.9); // corrección a primer orden con la Energía
+	emeannumber[i]=6535.2; // [eV]
+	tau[i]=tau_Si*(6.5/5.9); // a first order correction with energy ...
 }
 }
 
@@ -86,32 +91,33 @@ for (int j = 0; j < N0; ++j){
 	vector<double> yy(N0);
 	vector<double> zz(N0);
 
-	// Para yN = 250 µm, ND < 6 × 1011 cm−3, y para yN = 675 µm, ND < 1;9 × 1011 cm−3 donde
-	// donde yN es el espesor de la CCD e ND es el dopaje de dadores (miguel)
+/*
+	Para yN = 250 µm, ND < 6 × 1011 cm−3, y para yN = 675 µm, ND < 1;9 × 1011 cm−3 donde
+	donde yN es el espesor de la CCD e ND es el dopaje de dadores (miguel)
+	permitividad relativa silicio 11.68 (wikipedia)
+	permitivdad silicio 11.68 * 8.85×10^−12 F/m (wikipedia)
+	carga electron  −1,6× 10^−19 C (also wikipedia)
 
-	// permitividad relativa silicio 11.68 (wikipedia)
-	// permitivdad silicio 11.68 * 8.85×10^−12 F/m (wikipedia)
-	// carga electron  −1,6× 10^−19 C (also wikipedia)
+	a1= (( 6 × 10^5 m−3 * −1,6× 10^−19 C ))  / (( 11.68 * 8.85×10^−12 F/m  ))	 (para yN=250um)
+	unidades de a1= V/m^2
 
-	// a1= (( 6 × 10^5 m−3 * −1,6× 10^−19 C ))  / (( 11.68 * 8.85×10^−12 F/m  ))	 (para yN=250um)
-	// unidades de a1= V/m^2
+	diffusion coeficient silicon = k T µe / q  donde µe(uh) es la movilidad de los electrones (huecos)
+	unidades de difusion m^2/t
+	k= 1.38064852(79)×10−23 J K^-1
+	T= 120 K
+	q= carga electron = −1,6× 10^−19 C (also wikipedia)
+	µh = 1,35 × 108 (120K)−2,20 * cm^2 (V s)^-1 (miguel fuente 51)
 
-	// diffusion coeficient silicon = k T µe / q  donde µe(uh) es la movilidad de los electrones (huecos)
-	// unidades de difusion m^2/t
-	// k= 1.38064852(79)×10−23 J K^-1
-	// T= 120 K
-	// q= carga electron = −1,6× 10^−19 C (also wikipedia)
-	// µh = 1,35 × 108 (120K)−2,20 * cm^2 (V s)^-1 (miguel fuente 51)
+	D= (( 1.38064852(79)×10−23 J K^-1 * 120 K * 1,35 × 108 (120K)−2,20 * cm^2 (V s)^-1  ) /  1,6× 10^−19 C  ))
+	nu es efectivamente uh
 
-	// D= (( 1.38064852(79)×10−23 J K^-1 * 120 K * 1,35 × 108 (120K)−2,20 * cm^2 (V s)^-1  ) /  1,6× 10^−19 C  ))
+	E(y_w) habria que relativamente estimarlo con un V fijo.
 
-	// nu es efectivamente uh
+	vector<double> AA(N0); //constante 1 formula sigma cuadrado = 2D/a1*nu
+	vector<double> BB(N0); //constante 2 formula sigma cuadrado a1/E(y_w)
 
-	// E(y_w) habria que relativamente estimarlo con un V fijo.
-
-	// vector<double> AA(N0); //constante 1 formula sigma cuadrado = 2D/a1*nu
-	// vector<double> BB(N0); //constante 2 formula sigma cuadrado a1/E(y_w)
-
+*/
+  
 	vector<double> electrons(N0);
     vector<double> sigma(N0);
 
@@ -155,11 +161,14 @@ for (int j = 0; j < N0; ++j){
 	////////////////////////////////////////////////////////////////////
     // sigma of charge distribution on the CCD surface in microns
     // proportional to the square root of zz depth
-    // AA y BB son variables medibles sacadas del trabajo que nos paso Javier T
+    // AA y BB variables from Moroni 2015.
 
     // h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5));
+    
+    
+    // Comentado para correr varias veces el mismo toyMC cambiando B.
     // sigma[j] = pow(A*log(B*zz[j]+1),0.5);
-    sigma[j] = pow(A*log(zz[j]+1),0.5); // Sólo para correr varias veces el mismo toyMC
+       sigma[j] = pow(A*log(zz[j]+1),0.5); 
 
     //cout << "sigma = "<< sigma[j] << endl;
 
@@ -204,7 +213,6 @@ for (int i = 0; i < electrons[j]; ++i){
 
 }
 
-
 // Add dark Current ////////////////////////////////////////////////////
 void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL, int darkC){
 
@@ -242,10 +250,7 @@ void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL, int darkC){
         h2p_TOTAL->Fill(xdc[i],ydc[i]);
 
 	}
-
-
 }
-
 
 // Save the content of each histogram into pix variables ///////////////
 void pix(double*  pix_int, double*  pix_dc, double*  pix_total, TH2F *h2p_int, TH2F *h2p_DC, TH2F *h2p_TOTAL){
@@ -263,7 +268,6 @@ for (int i = 0; i < nx; ++i) {
 		   //cout<<endl;
 		}
 }
-
 }
 
 // Save simulation as fits files
@@ -366,7 +370,7 @@ for (int i = 0; i < sizeArray; ++i) pix_dc[i]=0;
 for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 
 
-/* Saco esto porque tengo que meter emeannumber en interaction
+/* Removed in order to include emeannumber into interaction /////////////////
 // Book 1D-histograms //////////////////////////////////////////////////
 	int binnumber = N0/5;
 
