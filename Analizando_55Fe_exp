@@ -1,0 +1,34 @@
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+Analizo cual es un buen umbral para la corriente oscura. Para ello voy moviendo la cantidad de electrones colectados y mirando un histograma de n hasta n=10.
+
+
+hitSumm->Draw("n>>h(80)","ohdu==4 && e>X && n<10")
+
+Entries(X=0)
+148655
+Entries(X=1)
+36134 (24% del anterior)
+Entries(X=2)
+20204 (56% del anterior)
+Entries(X=3)
+17094 (85% del anterior)
+Entries(X=4)
+16313 (95% del anterior)
+Entries(X=5)
+16047 (98% del anterior)
+Entries(X=6)
+15912 (99,1% del anterior)
+Entries(X=7)
+15842 (99,56% del anterior)
+Entries(X=8)
+15775 (99,58% del anterior)
+
+Gráficamente los gráficos de alto porcentaje (X=4 para arriba) se condicen en su distribucion. 
+Para X=4, aumentando n hasta 20, Entries aumenta entre un 2% y un 3%, siempre con el pico máximo en n=2.
+
+Esto lo guardo para no perderlo 19/6/2018
+hitSumm->Draw("Entry$:yPix", "ohdu==4")
+
+
+
