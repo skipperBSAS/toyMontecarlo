@@ -31,15 +31,21 @@ void Enable_and_Set_Branches(TTree* & tree);
 
 // Setting parameters //////////////////////////////////////////////////
 
+// range to the number of electrons per cluster
+  int emin = 1300; int emax = 17000; 
+  
+  int ohdu_numer = 4;
+  
+  std::string MCInputFile = "Output.root";
+ 
+////////////////////////////////////////////////////////////////////////
+
   int Entries_mc = 1;
   int Entries_exp = 1;
   int xmin = 0; // range for histograms
   int xmax =20; // range for histograms
   //int xBary_min=0;int xBary_max=100;
   //int yBary_min=0;int yBary_max=100;
-  
-  // range to the number of electrons per cluster
-  int emin = 1300; int emax = 17000; 
   
   int nbins = xmax+1;
    
@@ -75,7 +81,9 @@ void MakePlots(){
 	Enable_and_Set_Branches(texp); 
 	
 // Monte Carlo Data ////////////////////////////////////////////////////
-    TFile * f_mc = TFile::Open("suma_MC_tau5000.root");
+    //TFile * f_mc = TFile::Open("suma_MC_tau5000.root");
+    //TFile * f_mc = TFile::Open(MCInputFile);
+    TFile * f_mc = TFile::Open("Output.root");
     if (!f_mc->IsOpen()) {std::cerr << "ERROR: cannot open the root file with MC data" << std::endl;}   
     TTree * tmc    = (TTree*) f_mc->Get("hitSumm");
     TH1D * h_mc_n      =  new TH1D("h_mc_n"        , "Distribucion de tamanio de clusters", nbins, xmin, xmax);
@@ -92,7 +100,7 @@ void MakePlots(){
     for(int i_event=0;i_event<Entries_exp; i_event++){
    
     texp->GetEntry(i_event);
-		
+	if (ohdu == ohdu_numer) {
 		if (e>emin & e<emax){  // Condition over the number of electrons
 			if (xBary>10 & xBary<490){  // Condition over position
 				if (yBary>5 & yBary<45){  // Condition over position
@@ -101,13 +109,14 @@ void MakePlots(){
 				}
 			}
 		}	
+	}
     }
         
 // MonteCarlo Data /////////////////////////////////////////////////////           
     for(int i_event=0;i_event<Entries_mc; i_event++){
     
     tmc->GetEntry(i_event);
-    
+
 		if (e>emin & e<emax){  // Condition over the number of electrons
 			if (xBary>10 & xBary<490){  // Condition over position
 				if (yBary>5 & yBary<45){  // Condition over position

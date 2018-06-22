@@ -1,4 +1,4 @@
-// Version 18/07/2018 - 16:30 hs
+// Version 22/07/2018 - 17:30 hs
 /*
 Código escrito para simular:
 
@@ -52,7 +52,16 @@ vector<double> emeannumber(N0); //emeannumber: mean number of electrons generate
 vector<double> tau(N0); // skin depth
 
 for (int i = 0; i < N0; ++i){
+cout<<i<<"  ";
 
+//if (i==N0/2){
+//cout<<"Half of simulations have already been performed"<<endl;
+//}
+
+emeannumber[i]=5887;
+tau[i]=tau_Si;
+
+/*
 TRandom3 kalfa2(0);
 double alfa2= kalfa2.Uniform(0,1);
 TRandom3 kalfa1(0);
@@ -61,6 +70,7 @@ TRandom3 kbeta3(0);
 double beta3= kbeta3.Uniform(0,1);
 TRandom3 kbeta5(0);
 double beta5= kbeta5.Uniform(0,1);
+
 
 if (alfa2<0.51){
 	emeannumber[i]=5887.65; // [eV]
@@ -82,6 +92,8 @@ if (beta5<0.205){
 	emeannumber[i]=6535.2; // [eV]
 	tau[i]=tau_Si*(6.5/5.9); // a first order correction with energy ...
 }
+*/
+
 }
 
 for (int j = 0; j < N0; ++j){
@@ -166,7 +178,7 @@ for (int j = 0; j < N0; ++j){
     // h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5));
     
     
-    // Comentado para correr varias veces el mismo toyMC cambiando B.
+    // Comentado para correr varias veces el mismo toyMC cambiando B ***
     // sigma[j] = pow(A*log(B*zz[j]+1),0.5);
        sigma[j] = pow(A*log(zz[j]+1),0.5); 
 
@@ -181,14 +193,14 @@ for (int j = 0; j < N0; ++j){
     vector<double> chargex(electrons[j]);
     vector<double> chargey(electrons[j]);
 
-    for (int i = 0; i < electrons[j]; ++i) {
+    for (int k = 0; k < electrons[j]; ++k) {
 
 		////////////////////////////////////////////////////////////////
 		// rcx is the number of excited electrons after difussion
 		// Generate a gaussian random number with mean xx[j]
 		TRandom3 rcx(0); //seed=0  ->  different numbers every time
 		//h6->Fill(chargex[i] = rcx.Gaus(xx[j],sigma[j]));
-		chargex[i] = rcx.Gaus(xx[j],sigma[j]);
+		chargex[k] = rcx.Gaus(xx[j],sigma[j]);
 		//cout << endl;
 		//cout << "x on CCD = "<< chargex[i] << endl;
 
@@ -197,16 +209,16 @@ for (int j = 0; j < N0; ++j){
 		// Generate a gaussian random number with mean yy[j]
 		TRandom3 rcy(0); //seed=0  ->  different numbers every time
 		//h7->Fill(chargey[i] = rcy.Gaus(yy[j],sigma[j]));
-		chargey[i] = rcy.Gaus(yy[j],sigma[j]);
+		chargey[k] = rcy.Gaus(yy[j],sigma[j]);
 		//cout << "y on CCD = "<< chargey[j] << endl;
 	}
 
-for (int i = 0; i < electrons[j]; ++i){
+for (int k = 0; k < electrons[j]; ++k){
 
-	 h2p_int->Fill(chargex[i], chargey[i]); //Only interactions
-	 h2p_TOTAL->Fill(chargex[i], chargey[i]); // Only interactions, up to now ...
+	 h2p_int->Fill(chargex[k], chargey[k]); //Only interactions
+	 h2p_TOTAL->Fill(chargex[k], chargey[k]); // Only interactions, up to now ...
 
- }
+}
 
 }   // End loop over x-rays interactions
 
@@ -271,7 +283,6 @@ for (int i = 0; i < nx; ++i) {
 }
 
 // Save simulation as fits files
-
 void save(int nx, int ny, int SizeArray, double*  pix_int, double*  pix_dc, double*  pix_total, int A, int B){
 
 cout<< "Starting to save fits files ..."<<endl;
@@ -283,7 +294,7 @@ cout<< "Starting to save fits files ..."<<endl;
     long naxesOut[9] = {nx, ny, 1, 1, 1, 1, 1, 1, 1}; //va desde 0 hasta donde marques
 
 ///////////////////////Real Interactions ///////////////////////////////
-
+/*
 	std::string outMeanFitsFile1 = "interactions_A=";
     fitsfile *outClusterptr1;
     fits_create_file(&outClusterptr1, (outMeanFitsFile1+ std::to_string(A)+"_B="+ std::to_string(B)+".fits").c_str(), &status);
@@ -302,6 +313,7 @@ cout<< "Starting to save fits files ..."<<endl;
     fits_close_file(outClusterptr2,  &status);
     cout<< "dc.fits saved "<<endl;
 
+*/
 ///////////////  Real Interactions + Dark Current///////////////////////
 
 	std::string outMeanFitsFile3 = "interactions+dc_A=";
@@ -315,9 +327,7 @@ cout<< "Starting to save fits files ..."<<endl;
 ////////////////////////////////////////////////////////////////////////
 }
 
-
 // Plot histograms /////////////////////////////////////////////////////
-
 /*void hist(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7){
 if (N0>99){
 	TCanvas* canvas = new TCanvas("canvas","canvas",10,10,700,800);
@@ -354,7 +364,7 @@ int main(int argc, char* argv[]){
 TStopwatch t; // time counter
 t.Start();
 
-int N0 = atoi(argv[1]); //N0 represents the number of X-rays that interact with the CCD ////////
+int N0 = atoi(argv[1]);    // N0 represents the number of X-rays that interact with the CCD ////////
 int darkC = atoi(argv[2]); // Dark Current total events
 
 int A = atoi(argv[3]); //first parameter to fit (2D/a1*nu)
@@ -364,11 +374,14 @@ double*  pix_int = new double[sizeArray];   // pixels array with real interactio
 double*  pix_dc = new double[sizeArray];    // pixels array with dark current
 double*  pix_total = new double[sizeArray]; // pixels array with all information
 
+cout<<"Variables definition done"<<endl;
+
 // Initialization
 for (int i = 0; i < sizeArray; ++i) pix_int[i]=0;
 for (int i = 0; i < sizeArray; ++i) pix_dc[i]=0;
 for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 
+cout<<"Pix variables initialization done"<<endl;
 
 /* Removed in order to include emeannumber into interaction /////////////////
 // Book 1D-histograms //////////////////////////////////////////////////
@@ -402,26 +415,34 @@ for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 	h2p_TOTAL->SetName("Pixels");
 	h2p_TOTAL->SetTitle("CCD Interactions + Dark Current");
 
+cout<<"Histograms already booked"<<endl;
+
+cout<<"Monte Carlo simulations on the fly ..."<<endl;
+
 // This loop runs over each X-ray interaction //////////////////////////
 //interaction(h1,h2,h3,h4,h5,h6,h7, h2p_int, h2p_TOTAL);
 interaction(h2p_int, h2p_TOTAL,N0, A, B);
 
+cout<<endl;
+cout<<"Interactions done"<<endl;
+
 // Add dark Current ////////////////////////////////////////////////////
 addDC(h2p_DC, h2p_TOTAL, darkC);
-
-cout<< "MC simulations finished. "<<endl;
+cout<<"Dark current simulation done"<<endl;
 
 // Save the content of each histogram into pix variables ///////////////
 pix(pix_int,pix_dc,pix_total, h2p_int, h2p_DC, h2p_TOTAL);
+cout<<"Content of each histogram saved into pix variables"<<endl;
 
 // Save into fits
 save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, A ,B);
+cout<<"Content of pix variables saved into fits files"<<endl;
 
 // Histograms (not checked)
 // hist(h1,h2,h3,h4,h5,h6,h7);
 
 // Show CCD 2D plot ////////////////////////////////////////////////////
-	ch2p2->Divide(2,2);
+	ch2p2->Divide(1,3);
 	ch2p2->cd(1);
 	h2p_int->Draw("COLZ"); // Interactions
 	ch2p2->cd(2);
@@ -430,7 +451,7 @@ save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, A ,B);
 	h2p_TOTAL->Draw("COLZ"); // Interactions + Dark Current
 
 // Print TCanvas into pdf
-	TString ps = "CCD.pdf";
+	TString ps = "CCD_A="+ std::to_string(A)+"_B="+ std::to_string(B)+".pdf";
 	ch2p2->Print(ps+"[");
 	ch2p2->Print(ps);
 	ch2p2->Print(ps+"]");
