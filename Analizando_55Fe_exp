@@ -27,6 +27,28 @@ Entries(X=8)
 Gráficamente los gráficos de alto porcentaje (X=4 para arriba) se condicen en su distribucion. 
 Para X=4, aumentando n hasta 20, Entries aumenta entre un 2% y un 3%, siempre con el pico máximo en n=2.
 
+//////////////////////////////
+A continuación analizo la parte derecha e izquierda de la CCD, tomando como punto de separación exactamente el medio (250):
+
+hitSumm->Draw("n>>h(40)","ohdu==4 && e>4 && n<20 && xPix>250")
+
+Por alguna razón, muy extraña, el nro de entries es mayor (50857). Estableciendo el umbral de DC en e>4 obtengo una distribución baja en n=1, equivalente en 2 y 4, y equivalente pero mas baja en 3 y 5. Luego hay un decaimiento exponencial, seguramente porque formar clusters de 5 pixeles o mas se logra por apilamiento.
+
+//////////////
+
+Otro gráfico interesante es el que surge al dibujar ePix. Aqui se ven muchos picos en los valores en los cuales se genera ¿corriente oscura?. Estos picos estan alrededor de 0.9 y 1.8
+
+
+hitSumm->Draw("ePix>>h(2000)","ohdu==4 && ePix>0 && ePix<10 && xPix<250")
+
+Tambien sería interesante poner la exclusion de estos picos, aparentemente de corriente oscura. 
+
+hitSumm->Draw("n>>h(40)","ohdu==4 && e>4 && n<20 && xPix>250 && ePix>2")
+
+
+
+
+
 Esto lo guardo para no perderlo 19/6/2018
 hitSumm->Draw("Entry$:yPix", "ohdu==4")
 
