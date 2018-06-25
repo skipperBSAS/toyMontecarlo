@@ -1,4 +1,6 @@
-// Version 22/07/2018 - 17:30 hs
+// Version 25/07/2018 - 11:30 hs
+
+// En esta version el parametro B no juega ningun rol.
 /*
 Código escrito para simular:
 
@@ -283,7 +285,7 @@ for (int i = 0; i < nx; ++i) {
 }
 
 // Save simulation as fits files
-void save(int nx, int ny, int SizeArray, double*  pix_int, double*  pix_dc, double*  pix_total, int A, int B){
+void save(int nx, int ny, int SizeArray, double*  pix_int, double*  pix_dc, double*  pix_total, int N0, int darkC, int A, int B){
 
 cout<< "Starting to save fits files ..."<<endl;
 
@@ -316,9 +318,9 @@ cout<< "Starting to save fits files ..."<<endl;
 */
 ///////////////  Real Interactions + Dark Current///////////////////////
 
-	std::string outMeanFitsFile3 = "interactions+dc_A=";
+	std::string outMeanFitsFile3 = "/home/dario/CCD/toy/fits/interactions+dc_N0=";
     fitsfile *outClusterptr3;
-    fits_create_file(&outClusterptr3, (outMeanFitsFile3+ std::to_string(A)+"_B="+ std::to_string(B)+".fits").c_str(), &status);
+    fits_create_file(&outClusterptr3, (outMeanFitsFile3+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(A)+"_B="+ std::to_string(B)+".fits").c_str(), &status);
 	fits_create_img(outClusterptr3, -32, naxis, naxesOut, &status);
     fits_write_pix(outClusterptr3, TDOUBLE, fpixel, sizeArray, pix_total, &status);
     fits_close_file(outClusterptr3,  &status);
@@ -367,7 +369,7 @@ t.Start();
 int N0 = atoi(argv[1]);    // N0 represents the number of X-rays that interact with the CCD ////////
 int darkC = atoi(argv[2]); // Dark Current total events
 
-int A = atoi(argv[3]); //first parameter to fit (2D/a1*nu)
+int A = atoi(argv[3]); // first parameter to fit (2D/a1*nu)
 int B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
 
 double*  pix_int = new double[sizeArray];   // pixels array with real interactions
@@ -435,7 +437,7 @@ pix(pix_int,pix_dc,pix_total, h2p_int, h2p_DC, h2p_TOTAL);
 cout<<"Content of each histogram saved into pix variables"<<endl;
 
 // Save into fits
-save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, A ,B);
+save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, N0, darkC, A ,B);
 cout<<"Content of pix variables saved into fits files"<<endl;
 
 // Histograms (not checked)
@@ -451,7 +453,7 @@ cout<<"Content of pix variables saved into fits files"<<endl;
 	h2p_TOTAL->Draw("COLZ"); // Interactions + Dark Current
 
 // Print TCanvas into pdf
-	TString ps = "CCD_A="+ std::to_string(A)+"_B="+ std::to_string(B)+".pdf";
+	TString ps = "/home/dario/CCD/toy/CCDpdf/CCD_N0="+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(A)+"_B="+ std::to_string(B)+".pdf";
 	ch2p2->Print(ps+"[");
 	ch2p2->Print(ps);
 	ch2p2->Print(ps+"]");
