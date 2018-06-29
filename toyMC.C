@@ -144,6 +144,9 @@ for (int j = 0; j < N0; ++j){
     TRandom3 rz(0); //  seed=0  ->  different numbers every time
     //h3->Fill(zz[j] = rz.Exp(tau));
 	zz[j] = rz.Exp(tau[j]);
+	if (zz[j]>250){
+		continue;
+	}
 	//cout << endl;
 	//cout << "x = "<< xx[j] << " , " << "y = "<< yy[j] << " , " << "z = "<< zz[j] << endl;
 
@@ -172,9 +175,13 @@ for (int j = 0; j < N0; ++j){
     
     
     // Comentado para correr varias veces el mismo toyMC cambiando B ***
+    
     // sigma[j] = pow(A*log(B*zz[j]+1),0.5);
-       sigma[j] = pow(A*log(zz[j]+1),0.5); 
-
+		sigma[j] = pow(-A*log(abs(B*zz[j]+1)),0.5);
+    
+    
+    
+    
     //cout << "sigma = "<< sigma[j] << endl;
 
     ////////////////////////////////////////////////////////////////////
@@ -212,8 +219,9 @@ for (int k = 0; k < electrons[j]; ++k){
 	 h2p_TOTAL->Fill(chargex[k], chargey[k]); // Only interactions, up to now ...
 
 }
-
+cout << "#e = "<< j << endl;
 }   // End loop over x-rays interactions
+
 
 
 }
