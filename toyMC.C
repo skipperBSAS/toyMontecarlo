@@ -54,49 +54,40 @@ vector<double> emeannumber(N0); //emeannumber: mean number of electrons generate
 vector<double> tau(N0); // skin depth
 
 for (int i = 0; i < N0; ++i){
-cout<<i<<"  ";
+//cout<<i<<"  \n ";
 
-//if (i==N0/2){
-//cout<<"Half of simulations have already been performed"<<endl;
-//}
+TRandom3 kalfa(0);
+double alfa= kalfa.Uniform(0,1.92);
 
-emeannumber[i]=5887;
-tau[i]=tau_Si;
+//cout<<alfa<<"  \n ";
 
-/*
-TRandom3 kalfa2(0);
-double alfa2= kalfa2.Uniform(0,1);
-TRandom3 kalfa1(0);
-double alfa1= kalfa1.Uniform(0,1);
-TRandom3 kbeta3(0);
-double beta3= kbeta3.Uniform(0,1);
-TRandom3 kbeta5(0);
-double beta5= kbeta5.Uniform(0,1);
-
-
-if (alfa2<0.51){
+if (alfa<0.51){
 	emeannumber[i]=5887.65; // [eV]
 	tau[i]=tau_Si;
-	i++;
+	//i++;
+	//cout<<alfa<<" A  \n ";
 }
-if (alfa1<1.00){
+if (0.51<alfa && alfa<1.51){
 	emeannumber[i]=5898.75; // [eV]
 	tau[i]=tau_Si;
-	i++;
+	//i++;
+	//cout<<alfa<<" B  \n ";
 }
-if (beta3<0.205){
+if (1.51<alfa && alfa<1.715){
 	emeannumber[i]=6490.45; // [eV]
 	tau[i]=tau_Si*(6.5/5.9); // a first order correction with energy ...
-	i++;
+	//i++;
+	//cout<<alfa<<" C  \n ";
 }
-if (beta5<0.205){
-	i++;
+if (1.715<alfa && alfa<1.92){
+	//i++;
 	emeannumber[i]=6535.2; // [eV]
 	tau[i]=tau_Si*(6.5/5.9); // a first order correction with energy ...
+	//cout<<alfa<<" D  \n ";
 }
-*/
+//cout<<i<<"  \n ";
+}
 
-}
 
 for (int j = 0; j < N0; ++j){
 
