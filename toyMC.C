@@ -61,6 +61,10 @@ double alfa= kalfa.Uniform(0,1.92);
 
 //cout<<alfa<<"  \n ";
 
+// Cuidado que emeannumber no es la energia sino el numero medio de
+// electrone que produce cada X. Se parecen solo porque la ganancia y
+// la energia de ionizacion son similares (3.7) y se cancelan mutuamente.
+
 if (alfa<0.51){
 	emeannumber[i]=5887.65; // [eV]
 	tau[i]=tau_Si;
@@ -98,7 +102,7 @@ for (int j = 0; j < N0; ++j){
 
 /*
 	Para yN = 250 µm, ND < 6 × 1011 cm−3, y para yN = 675 µm, ND < 1;9 × 1011 cm−3 donde
-	donde yN es el espesor de la CCD e ND es el dopaje de dadores (miguel)
+	donde yN es el espesor de la CCD e ND es el dopaje de dadores (Miguel)
 	permitividad relativa silicio 11.68 (wikipedia)
 	permitivdad silicio 11.68 * 8.85×10^−12 F/m (wikipedia)
 	carga electron  −1,6× 10^−19 C (also wikipedia)
@@ -173,14 +177,8 @@ for (int j = 0; j < N0; ++j){
 
     // h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5));
     
-    
-    // Comentado para correr varias veces el mismo toyMC cambiando B ***
-    
-    // sigma[j] = pow(A*log(B*zz[j]+1),0.5);
-		sigma[j] = pow(-A*log(abs(B*zz[j]+1)),0.5);
-    
-    
-    
+    // Reference:
+    sigma[j] = pow(-A*log(abs(B*zz[j]+1)),0.5);
     
     //cout << "sigma = "<< sigma[j] << endl;
 
@@ -284,7 +282,7 @@ for (int i = 0; i < nx; ++i) {
 }
 
 // Save simulation as fits files
-void save(int nx, int ny, int SizeArray, double*  pix_int, double*  pix_dc, double*  pix_total, int N0, int darkC, int A, int B){
+void save(int nx, int ny, int SizeArray, double*  pix_int, double*  pix_dc, double*  pix_total, int N0, int darkC, int A, int B, int R){
 
 cout<< "Starting to save fits files ..."<<endl;
 
@@ -317,9 +315,9 @@ cout<< "Starting to save fits files ..."<<endl;
 */
 ///////////////  Real Interactions + Dark Current///////////////////////
 
-	std::string outMeanFitsFile3 = "/home/dario/CCD/toy/fits/interactions+dc_N0=";
+	std::string outMeanFitsFile3 = "/home/dario/CCD/toy/fits/MC/MC_N0=";
     fitsfile *outClusterptr3;
-    fits_create_file(&outClusterptr3, (outMeanFitsFile3+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(A)+"_B="+ std::to_string(B)+".fits").c_str(), &status);
+    fits_create_file(&outClusterptr3, (outMeanFitsFile3+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(A)+"_B="+ std::to_string(B)+"_R="+ std::to_string(R)+".fits").c_str(), &status);
 	fits_create_img(outClusterptr3, -32, naxis, naxesOut, &status);
     fits_write_pix(outClusterptr3, TDOUBLE, fpixel, sizeArray, pix_total, &status);
     fits_close_file(outClusterptr3,  &status);
@@ -370,6 +368,8 @@ int darkC = atoi(argv[2]); // Dark Current total events
 
 int A = atoi(argv[3]); // first parameter to fit (2D/a1*nu)
 int B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
+
+int R = atoi(argv[5]); // RUN number // only to label simulations with the same parameters
 
 double*  pix_int = new double[sizeArray];   // pixels array with real interactions
 double*  pix_dc = new double[sizeArray];    // pixels array with dark current
@@ -436,7 +436,7 @@ pix(pix_int,pix_dc,pix_total, h2p_int, h2p_DC, h2p_TOTAL);
 cout<<"Content of each histogram saved into pix variables"<<endl;
 
 // Save into fits
-save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, N0, darkC, A ,B);
+save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, N0, darkC, A ,B, R);
 cout<<"Content of pix variables saved into fits files"<<endl;
 
 // Histograms (not checked)
@@ -452,7 +452,7 @@ cout<<"Content of pix variables saved into fits files"<<endl;
 	h2p_TOTAL->Draw("COLZ"); // Interactions + Dark Current
 
 // Print TCanvas into pdf
-	TString ps = "/home/dario/CCD/toy/CCDpdf/CCD_N0="+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(A)+"_B="+ std::to_string(B)+".pdf";
+	TString ps = "/home/dario/CCD/toy/CCDpdf/CCD_N0"+std::to_string(N0)+"DC"+std::to_string(darkC)+"A"+ std::to_string(A)+"B"+ std::to_string(B)+"R"+ std::to_string(R)+".pdf";
 	ch2p2->Print(ps+"[");
 	ch2p2->Print(ps);
 	ch2p2->Print(ps+"]");
