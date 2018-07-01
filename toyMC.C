@@ -217,7 +217,7 @@ for (int k = 0; k < electrons[j]; ++k){
 	 h2p_TOTAL->Fill(chargex[k], chargey[k]); // Only interactions, up to now ...
 
 }
-cout << "#e = "<< j << endl;
+	//cout << "#e = "<< j << endl;
 }   // End loop over x-rays interactions
 
 
@@ -418,7 +418,7 @@ cout<<"Pix variables initialization done"<<endl;
 
 cout<<"Histograms already booked"<<endl;
 
-cout<<"Monte Carlo simulations on the fly ..."<<endl;
+cout<<"Monte Carlo simulations runing ..."<<endl;
 
 // This loop runs over each X-ray interaction //////////////////////////
 //interaction(h1,h2,h3,h4,h5,h6,h7, h2p_int, h2p_TOTAL);
