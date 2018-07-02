@@ -1,4 +1,4 @@
-// Version 25/07/2018 - 11:30 hs
+// Version 2/07/2018 - 15:30 hs
 
 // En esta version el parametro B no juega ningun rol.
 /*
@@ -178,7 +178,7 @@ for (int j = 0; j < N0; ++j){
     // h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5));
     
     // Reference:
-    sigma[j] = pow(-A*log(abs(B*zz[j]+1)),0.5);
+    sigma[j] = pow(-A*log(abs((B/10000)*zz[j]+1)),0.5);
     
     //cout << "sigma = "<< sigma[j] << endl;
 

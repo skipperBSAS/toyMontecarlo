@@ -81,9 +81,9 @@ void MakePlots(){
 	Enable_and_Set_Branches(texp); 
 	
 // Monte Carlo Data ////////////////////////////////////////////////////
-    //TFile * f_mc = TFile::Open("suma_MC_tau5000.root");
-    //TFile * f_mc = TFile::Open(MCInputFile);
-    TFile * f_mc = TFile::Open("Output.root");
+    
+    TFile * f_mc = TFile::Open("Out_N0=200_DC=500_A=180_B=13.root");
+    
     if (!f_mc->IsOpen()) {std::cerr << "ERROR: cannot open the root file with MC data" << std::endl;}   
     TTree * tmc    = (TTree*) f_mc->Get("hitSumm");
     TH1D * h_mc_n      =  new TH1D("h_mc_n"        , "Distribucion de tamanio de clusters", nbins, xmin, xmax);
