@@ -7,8 +7,8 @@ command = ""
 for N in range(200,201):
 	for iDC in range(0,1):
 		DC=iDC
-		for A in [120, 150, 180, 210, 240]: 
-			for B in [10, 20, 30, 40]: # This number will be divided by 10.000 inside toyMC where must be measured in 1/um
+		for A in [240,270]: 
+			for B in [11, 110]: # This number will be divided by 10.000 inside toyMC where must be measured in 1/um
 				for R in range(1,11):  
 					command += "./toyMC.exe "+str(N)+" "+str(DC)+" "+str(A)+" "+str(B)+" "+str(R)+" && "
 command = command[:-2]     

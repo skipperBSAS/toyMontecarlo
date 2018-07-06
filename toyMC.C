@@ -1,4 +1,4 @@
-// Version 6/07/2018 
+// Version 2/07/2018 - 15:30 hs
 
 // En esta version el parametro B no juega ningun rol.
 /*
@@ -35,7 +35,7 @@ using namespace std;
 
 // Internal Parameters /////////////////////////////////////////////////
 // CCD size. Real size: 4126 x 866.
-int nx = 500;           // Number of pixels in x-direction
+int nx = 250;           // Number of pixels in x-direction
 int ny = 50;            // Number of pixels in y-direction
 int pixSize= 15;        // Pixel size side in microns
 int xSize = nx*pixSize; // x CCD size in microns
@@ -48,7 +48,7 @@ long fpixel[2] = {1,1};
 
 // This loop runs over each X-ray interaction //////////////////////////
 // void interaction(TH1D* h1, TH1D* h2, TH1D* h3, TH1D* h4, TH1D* h5, TH1D* h6, TH1D* h7,  TH2F *h2p_int,  TH2F *h2p_TOTAL){
-void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int N0, int A, int B){
+void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int N0, float A, float B, TH1D *h5){
 
 vector<double> emeannumber(N0); //emeannumber: mean number of electrons generates by a X-ray //////////
 vector<double> tau(N0); // skin depth
@@ -62,7 +62,7 @@ double alfa= kalfa.Uniform(0,1.92);
 //cout<<alfa<<"  \n ";
 
 // Cuidado que emeannumber no es la energia sino el numero medio de
-// electrones que produce cada X. Se parecen solo porque la ganancia y
+// electrone que produce cada X. Se parecen solo porque la ganancia y
 // la energia de ionizacion son similares (3.7) y se cancelan mutuamente.
 
 if (alfa<0.51){
@@ -126,7 +126,7 @@ for (int j = 0; j < N0; ++j){
 	vector<double> BB(N0); //constante 2 formula sigma cuadrado a1/E(y_w)
 
 */
-  
+
 	vector<double> electrons(N0);
     vector<double> sigma(N0);
 
@@ -148,9 +148,11 @@ for (int j = 0; j < N0; ++j){
     TRandom3 rz(0); //  seed=0  ->  different numbers every time
     //h3->Fill(zz[j] = rz.Exp(tau));
 	zz[j] = rz.Exp(tau[j]);
-	if (zz[j]>250){
+	if (zz[j]>200){
 		continue;
 	}
+	//cout << "zeta = "<< zz[j] << endl;
+
 	//cout << endl;
 	//cout << "x = "<< xx[j] << " , " << "y = "<< yy[j] << " , " << "z = "<< zz[j] << endl;
 
@@ -170,16 +172,44 @@ for (int j = 0; j < N0; ++j){
 
 	//cout << "#e = "<< electrons[j] << endl;
 
+
+
+
+
+
+
+
+
+
+
+
+
 	////////////////////////////////////////////////////////////////////
     // sigma of charge distribution on the CCD surface in microns
     // proportional to the square root of zz depth
     // AA y BB variables from Moroni 2015.
 
-    // h5->Fill(sigma[j] = pow(-A/100*log((-B/10000)*zz[j]+1),0.5));
-    
-    // Reference: Aguilar-Arevalo et al. 2016  A=180 B=0.0013
-      sigma[j] = pow(-A/100*log((1-B/10000)*zz[j]),0.5);
-    
+    h5->Fill(sigma[j] = pow(-A/100*log((-B/10000)*zz[j]+1),0.5));
+	//cout << "sigma = "<< sigma[j] << endl;
+    // Reference:
+    //sigma[j] = pow(-A*log(abs((B/10000)*zz[j]-1)),0.5);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //cout << "sigma = "<< sigma[j] << endl;
 
     ////////////////////////////////////////////////////////////////////
@@ -232,13 +262,13 @@ void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL, int darkC){
 		//int xdc=XDC.Uniform(0,xSize);
 		//TRandom3 YDC(0); //  seed=0  ->  different numbers every time
 		//int ydc=YDC.Uniform(0,ySize);
-		
+
 	    //double xdc =  rand() % xSize;
         //double ydc =  rand() % ySize;
         //h2p_DC->Fill(xdc,ydc);
         //h2p_TOTAL->Fill(xdc,ydc);
 	//}
-	
+
 		vector<int> xdc(darkC);
 		vector<int> ydc(darkC);
 
@@ -254,7 +284,7 @@ void addDC(TH2F *h2p_DC, TH2F *h2p_TOTAL, int darkC){
 		xdc[i]=XDC.Uniform(0,xSize);
 
 	}
-	
+
 		for (int i = 0; i < darkC; ++i){
 
 		h2p_DC->Fill(xdc[i],ydc[i]);
@@ -315,7 +345,7 @@ cout<< "Starting to save fits files ..."<<endl;
 */
 ///////////////  Real Interactions + Dark Current///////////////////////
 
-	std::string outMeanFitsFile3 = "./fits/MC_N0=";
+	std::string outMeanFitsFile3 = "./MC/MC_N0=";
     fitsfile *outClusterptr3;
     fits_create_file(&outClusterptr3, (outMeanFitsFile3+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(A)+"_B="+ std::to_string(B)+"_R="+ std::to_string(R)+".fits").c_str(), &status);
 	fits_create_img(outClusterptr3, -32, naxis, naxesOut, &status);
@@ -366,8 +396,9 @@ t.Start();
 int N0 = atoi(argv[1]);    // N0 represents the number of X-rays that interact with the CCD ////////
 int darkC = atoi(argv[2]); // Dark Current total events
 
-int A = atoi(argv[3]); // first parameter to fit (2D/a1*nu)
-int B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
+float A = atoi(argv[3]); // first parameter to fit (2D/a1*nu)
+float B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
+
 
 int R = atoi(argv[5]); // RUN number // only to label simulations with the same parameters
 
@@ -384,23 +415,23 @@ for (int i = 0; i < sizeArray; ++i) pix_total[i]=0;
 
 cout<<"Pix variables initialization done"<<endl;
 
-/* Removed in order to include emeannumber into interaction /////////////////
-// Book 1D-histograms //////////////////////////////////////////////////
-	int binnumber = N0/5;
+ //Removed in order to include emeannumber into interaction /////////////////
+//// Book 1D-histograms //////////////////////////////////////////////////
+	//int binnumber = N0/5;
 
-	auto h1 = new TH1D("h1","x-coordinate",binnumber,-xSize/4,1.25*xSize);
-	auto h2 = new TH1D("h2","y-coordinate",binnumber,-ySize/4,1.25*ySize);
-	auto h3 = new TH1D("h3","z-coordinate",binnumber,-tau/5,5*tau);
+	//auto h1 = new TH1D("h1","x-coordinate",binnumber,-xSize/4,1.25*xSize);
+	//auto h2 = new TH1D("h2","y-coordinate",binnumber,-ySize/4,1.25*ySize);
+	//auto h3 = new TH1D("h3","z-coordinate",binnumber,-tau/5,5*tau);
 
-	double esigma= pow(emeannumber,0.5); //raiz de emeannumber
-	auto h4 = new TH1D("h4","number of electrons",binnumber,emeannumber-5*esigma,emeannumber+5*esigma);
-	auto h5 = new TH1D("h5","sigma",binnumber,-tau/10,tau/2);
-	auto h6 = new TH1D("h6","spot x",binnumber,-xSize/2,3*xSize/2);
-	auto h7 = new TH1D("h7","spot y",binnumber,-ySize/2,3*ySize/2);
-*/
+	//double esigma= pow(emeannumber,0.5); //raiz de emeannumber
+	//auto h4 = new TH1D("h4","number of electrons",binnumber,emeannumber-5*esigma,emeannumber+5*esigma);
+		auto *h5 = new TH1D("h5","sigma",200,0,40);
+	//auto h6 = new TH1D("h6","spot x",binnumber,-xSize/2,3*xSize/2);
+	//auto h7 = new TH1D("h7","spot y",binnumber,-ySize/2,3*ySize/2);
+
 
 // CCD - Interactions Only
-	TCanvas *ch2p2 = new TCanvas("ch2p2","ch2p2",30*nx,30*ny);
+	TCanvas *ch2p2 = new TCanvas("ch2p2","ch2p2",1000,1000);
 
 	TH2F *h2p_int = new TH2F("h2p_int","",nx,-0,xSize,ny,0,ySize); //este es el histograma 2D. xbins, xmin, xmax y luego y idem.
 	h2p_int->SetName("Pixels");
@@ -422,7 +453,7 @@ cout<<"Monte Carlo simulations runing ..."<<endl;
 
 // This loop runs over each X-ray interaction //////////////////////////
 //interaction(h1,h2,h3,h4,h5,h6,h7, h2p_int, h2p_TOTAL);
-interaction(h2p_int, h2p_TOTAL,N0, A, B);
+interaction(h2p_int, h2p_TOTAL,N0, A, B, h5);
 
 cout<<endl;
 cout<<"Interactions done"<<endl;
@@ -442,23 +473,23 @@ cout<<"Content of pix variables saved into fits files"<<endl;
 // Histograms (not checked)
 // hist(h1,h2,h3,h4,h5,h6,h7);
 
-/*
 // Show CCD 2D plot ////////////////////////////////////////////////////
-	ch2p2->Divide(1,3);
+	ch2p2->Divide(2,2);
 	ch2p2->cd(1);
-	h2p_int->Draw("COLZ");   // Interactions
+	h2p_int->Draw("COLZ"); // Interactions
 	ch2p2->cd(2);
-	h2p_DC->Draw("COLZ");    // Dark Current
+	h2p_DC->Draw("COLZ"); // Dark Current
 	ch2p2->cd(3);
 	h2p_TOTAL->Draw("COLZ"); // Interactions + Dark Current
+	ch2p2->cd(4);
+	h5->Draw("COLZ"); // Interactions + Dark Current
 
 // Print TCanvas into pdf
-	TString ps = "CCD_N0"+std::to_string(N0)+"DC"+std::to_string(darkC)+"A"+ std::to_string(A)+"B"+ std::to_string(B)+"R"+ std::to_string(R)+".pdf";
+	TString ps = "./MC/CCD_N0"+std::to_string(N0)+"DC"+std::to_string(darkC)+"A"+ std::to_string(A)+"B"+ std::to_string(B)+"R"+ std::to_string(R)+".pdf";
 	ch2p2->Print(ps+"[");
 	ch2p2->Print(ps);
 	ch2p2->Print(ps+"]");
-cout<<"Guarde el pdf"<<endl;
-*/
+
 	t.Stop();
 	t.Print();
 
