@@ -1,4 +1,4 @@
-// Version 2/07/2018 - 15:30 hs
+// Version 6/07/2018 
 
 // En esta version el parametro B no juega ningun rol.
 /*
@@ -62,7 +62,7 @@ double alfa= kalfa.Uniform(0,1.92);
 //cout<<alfa<<"  \n ";
 
 // Cuidado que emeannumber no es la energia sino el numero medio de
-// electrone que produce cada X. Se parecen solo porque la ganancia y
+// electrones que produce cada X. Se parecen solo porque la ganancia y
 // la energia de ionizacion son similares (3.7) y se cancelan mutuamente.
 
 if (alfa<0.51){
@@ -175,10 +175,10 @@ for (int j = 0; j < N0; ++j){
     // proportional to the square root of zz depth
     // AA y BB variables from Moroni 2015.
 
-    // h5->Fill(sigma[j] = pow(AA[j]*log(BB[j]*zz[j]+1),0.5));
+    // h5->Fill(sigma[j] = pow(-A/100*log((-B/10000)*zz[j]+1),0.5));
     
-    // Reference:
-    sigma[j] = pow(-A*log(abs((B/10000)*zz[j]+1)),0.5);
+    // Reference: Aguilar-Arevalo et al. 2016  A=180 B=0.0013
+      sigma[j] = pow(-A/100*log((1-B/10000)*zz[j]),0.5);
     
     //cout << "sigma = "<< sigma[j] << endl;
 
@@ -315,7 +315,7 @@ cout<< "Starting to save fits files ..."<<endl;
 */
 ///////////////  Real Interactions + Dark Current///////////////////////
 
-	std::string outMeanFitsFile3 = "/home/dario/CCD/toy/fits/MC/MC_N0=";
+	std::string outMeanFitsFile3 = "./fits/MC_N0=";
     fitsfile *outClusterptr3;
     fits_create_file(&outClusterptr3, (outMeanFitsFile3+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(A)+"_B="+ std::to_string(B)+"_R="+ std::to_string(R)+".fits").c_str(), &status);
 	fits_create_img(outClusterptr3, -32, naxis, naxesOut, &status);
@@ -442,21 +442,23 @@ cout<<"Content of pix variables saved into fits files"<<endl;
 // Histograms (not checked)
 // hist(h1,h2,h3,h4,h5,h6,h7);
 
+/*
 // Show CCD 2D plot ////////////////////////////////////////////////////
 	ch2p2->Divide(1,3);
 	ch2p2->cd(1);
-	h2p_int->Draw("COLZ"); // Interactions
+	h2p_int->Draw("COLZ");   // Interactions
 	ch2p2->cd(2);
-	h2p_DC->Draw("COLZ"); // Dark Current
+	h2p_DC->Draw("COLZ");    // Dark Current
 	ch2p2->cd(3);
 	h2p_TOTAL->Draw("COLZ"); // Interactions + Dark Current
 
 // Print TCanvas into pdf
-	TString ps = "/home/dario/CCD/toy/CCDpdf/CCD_N0"+std::to_string(N0)+"DC"+std::to_string(darkC)+"A"+ std::to_string(A)+"B"+ std::to_string(B)+"R"+ std::to_string(R)+".pdf";
+	TString ps = "CCD_N0"+std::to_string(N0)+"DC"+std::to_string(darkC)+"A"+ std::to_string(A)+"B"+ std::to_string(B)+"R"+ std::to_string(R)+".pdf";
 	ch2p2->Print(ps+"[");
 	ch2p2->Print(ps);
 	ch2p2->Print(ps+"]");
-
+cout<<"Guarde el pdf"<<endl;
+*/
 	t.Stop();
 	t.Print();
 
