@@ -1,4 +1,4 @@
-// Version 2/07/2018 - 15:30 hs
+// Version 9/7/2018
 
 // En esta version el parametro B no juega ningun rol.
 /*
@@ -65,27 +65,31 @@ double alfa= kalfa.Uniform(0,1.92);
 // electrone que produce cada X. Se parecen solo porque la ganancia y
 // la energia de ionizacion son similares (3.7) y se cancelan mutuamente.
 
+// f es la relacion necesaria para que los picos de un histograma de la
+// variable e coincidan con los de un root file experimental.
+double f = 0.88;
+
 if (alfa<0.51){
-	emeannumber[i]=5887.65; // [eV]
+	emeannumber[i]=5887.65*f; // [eV]
 	tau[i]=tau_Si;
 	//i++;
 	//cout<<alfa<<" A  \n ";
 }
 if (0.51<alfa && alfa<1.51){
-	emeannumber[i]=5898.75; // [eV]
+	emeannumber[i]=5898.75*f; // [eV]
 	tau[i]=tau_Si;
 	//i++;
 	//cout<<alfa<<" B  \n ";
 }
 if (1.51<alfa && alfa<1.715){
-	emeannumber[i]=6490.45; // [eV]
+	emeannumber[i]=6490.45*f; // [eV]
 	tau[i]=tau_Si*(6.5/5.9); // a first order correction with energy ...
 	//i++;
 	//cout<<alfa<<" C  \n ";
 }
 if (1.715<alfa && alfa<1.92){
 	//i++;
-	emeannumber[i]=6535.2; // [eV]
+	emeannumber[i]=6535.2*f; // [eV]
 	tau[i]=tau_Si*(6.5/5.9); // a first order correction with energy ...
 	//cout<<alfa<<" D  \n ";
 }
@@ -173,17 +177,6 @@ for (int j = 0; j < N0; ++j){
 	//cout << "#e = "<< electrons[j] << endl;
 
 
-
-
-
-
-
-
-
-
-
-
-
 	////////////////////////////////////////////////////////////////////
     // sigma of charge distribution on the CCD surface in microns
     // proportional to the square root of zz depth
@@ -193,22 +186,6 @@ for (int j = 0; j < N0; ++j){
 	//cout << "sigma = "<< sigma[j] << endl;
     // Reference:
     //sigma[j] = pow(-A*log(abs((B/10000)*zz[j]-1)),0.5);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     //cout << "sigma = "<< sigma[j] << endl;
 
@@ -249,8 +226,6 @@ for (int k = 0; k < electrons[j]; ++k){
 }
 	//cout << "#e = "<< j << endl;
 }   // End loop over x-rays interactions
-
-
 
 }
 
@@ -345,9 +320,9 @@ cout<< "Starting to save fits files ..."<<endl;
 */
 ///////////////  Real Interactions + Dark Current///////////////////////
 
-	std::string outMeanFitsFile3 = "./MC/MC_N0=";
+	std::string outMeanFitsFile3 = "./fits/MC_N0=";
     fitsfile *outClusterptr3;
-    fits_create_file(&outClusterptr3, (outMeanFitsFile3+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(A)+"_B="+ std::to_string(B)+"_R="+ std::to_string(R)+".fits").c_str(), &status);
+    fits_create_file(&outClusterptr3, (outMeanFitsFile3+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(int(A))+"_B="+ std::to_string(int(B))+"_R="+ std::to_string(R)+".fits").c_str(), &status);
 	fits_create_img(outClusterptr3, -32, naxis, naxesOut, &status);
     fits_write_pix(outClusterptr3, TDOUBLE, fpixel, sizeArray, pix_total, &status);
     fits_close_file(outClusterptr3,  &status);
@@ -399,6 +374,7 @@ int darkC = atoi(argv[2]); // Dark Current total events
 float A = atoi(argv[3]); // first parameter to fit (2D/a1*nu)
 float B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
 
+//cout<<"A "<<A<<" B "<<B<<endl;
 
 int R = atoi(argv[5]); // RUN number // only to label simulations with the same parameters
 
@@ -485,7 +461,7 @@ cout<<"Content of pix variables saved into fits files"<<endl;
 	h5->Draw("COLZ"); // Interactions + Dark Current
 
 // Print TCanvas into pdf
-	TString ps = "./MC/CCD_N0"+std::to_string(N0)+"DC"+std::to_string(darkC)+"A"+ std::to_string(A)+"B"+ std::to_string(B)+"R"+ std::to_string(R)+".pdf";
+	TString ps = "./CCDpdf/CCD_N0"+std::to_string(N0)+"DC"+std::to_string(darkC)+"A"+ std::to_string(int(A))+"B"+ std::to_string(int(B))+"R"+ std::to_string(R)+".pdf";
 	ch2p2->Print(ps+"[");
 	ch2p2->Print(ps);
 	ch2p2->Print(ps+"]");
