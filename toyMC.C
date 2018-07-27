@@ -1,6 +1,5 @@
-// Version 9/7/2018
+// Version 24/07/2018 
 
-// En esta version el parametro B no juega ningun rol.
 /*
 Código escrito para simular:
 
@@ -53,7 +52,7 @@ void interaction(TH2F *h2p_int,  TH2F *h2p_TOTAL, int N0, float A, float B, TH1D
 vector<double> emeannumber(N0); //emeannumber: mean number of electrons generates by a X-ray //////////
 vector<double> tau(N0); // skin depth
 
-for (int i = 0; i < N0; ++i){
+for (int i = 0; i < N0; ++i){ //Starts loop for interactions
 //cout<<i<<"  \n ";
 
 TRandom3 kalfa(0);
@@ -61,35 +60,29 @@ double alfa= kalfa.Uniform(0,1.92);
 
 //cout<<alfa<<"  \n ";
 
-// Cuidado que emeannumber no es la energia sino el numero medio de
-// electrone que produce cada X. Se parecen solo porque la ganancia y
-// la energia de ionizacion son similares (3.7) y se cancelan mutuamente.
-
-// f es la relacion necesaria para que los picos de un histograma de la
-// variable e coincidan con los de un root file experimental.
-double f = 0.88;
+double f = 3.6; //ionizaion energy
 
 if (alfa<0.51){
-	emeannumber[i]=5887.65*f; // [eV]
+	emeannumber[i]=5887.65/f; // [eV]
 	tau[i]=tau_Si;
 	//i++;
 	//cout<<alfa<<" A  \n ";
 }
 if (0.51<alfa && alfa<1.51){
-	emeannumber[i]=5898.75*f; // [eV]
+	emeannumber[i]=5898.75/f; // [eV]
 	tau[i]=tau_Si;
 	//i++;
 	//cout<<alfa<<" B  \n ";
 }
 if (1.51<alfa && alfa<1.715){
-	emeannumber[i]=6490.45*f; // [eV]
+	emeannumber[i]=6490.45/f; // [eV]
 	tau[i]=tau_Si*(6.5/5.9); // a first order correction with energy ...
 	//i++;
 	//cout<<alfa<<" C  \n ";
 }
 if (1.715<alfa && alfa<1.92){
 	//i++;
-	emeannumber[i]=6535.2*f; // [eV]
+	emeannumber[i]=6535.2/f; // [eV]
 	tau[i]=tau_Si*(6.5/5.9); // a first order correction with energy ...
 	//cout<<alfa<<" D  \n ";
 }
@@ -131,7 +124,7 @@ for (int j = 0; j < N0; ++j){
 
 */
 
-	vector<double> electrons(N0);
+	vector<int> electrons(N0);
     vector<double> sigma(N0);
 
 	// Generate a pair (xx, yy) of uniform random numbers //////////////
@@ -166,17 +159,20 @@ for (int j = 0; j < N0; ++j){
     // by the x-ray after photoelectric interaction.
 
 	// Generate a Poisson random number with mu = emeannumber //////////
-
 	// Fe55 decay
 
 
 	TRandom3 re(0); //seed=0  ->  different numbers every time
+
 	//h4->Fill(electrons[j] = re.Poisson(emeannumber[j]));
-	electrons[j] = re.Poisson(emeannumber[j]);
 
-	//cout << "#e = "<< electrons[j] << endl;
-
-
+	//electrons[j] = re.Poisson(emeannumber[j]);
+	//double desvest =pow(emeannumber[j],0.5);
+	
+	double Fano = 0.147; // obtenido a partir de los datos
+	double desvest =pow(emeannumber[j]*Fano,0.5);
+	electrons[j] = re.Gaus(emeannumber[j],desvest);
+	
 	////////////////////////////////////////////////////////////////////
     // sigma of charge distribution on the CCD surface in microns
     // proportional to the square root of zz depth
@@ -184,8 +180,10 @@ for (int j = 0; j < N0; ++j){
 
     h5->Fill(sigma[j] = pow(-A/100*log((-B/10000)*zz[j]+1),0.5));
 	//cout << "sigma = "<< sigma[j] << endl;
-    // Reference:
+    
     //sigma[j] = pow(-A*log(abs((B/10000)*zz[j]-1)),0.5);
+
+
 
     //cout << "sigma = "<< sigma[j] << endl;
 
@@ -218,14 +216,14 @@ for (int j = 0; j < N0; ++j){
 		//cout << "y on CCD = "<< chargey[j] << endl;
 	}
 
-for (int k = 0; k < electrons[j]; ++k){
+		for (int k = 0; k < electrons[j]; ++k){
 
-	 h2p_int->Fill(chargex[k], chargey[k]); //Only interactions
-	 h2p_TOTAL->Fill(chargex[k], chargey[k]); // Only interactions, up to now ...
-
-}
+			 h2p_int->Fill(chargex[k], chargey[k]); //Only interactions
+			 h2p_TOTAL->Fill(chargex[k], chargey[k]); // Only interactions, up to now ...
+		}
+		
 	//cout << "#e = "<< j << endl;
-}   // End loop over x-rays interactions
+}  // End loop over x-rays interactions
 
 }
 
@@ -283,6 +281,13 @@ for (int i = 0; i < nx; ++i) {
 		   //cout<<"bin: "<<i*nx+j<<" Interac + DC: "<<pix_total[i*nx+j]<<endl;
 		   //cout<<endl;
 		}
+		
+		for (int j = 0; j < ny; ++j) {
+
+		   pix_int[j*nx+i]= pix_int[j*nx+i]*3.2657;
+		   pix_dc[j*nx+i]= pix_dc[j*nx+i]*3.2657;
+		   pix_total[j*nx+i]= pix_total[j*nx+i]*3.2657;
+		}
 }
 }
 
@@ -322,7 +327,7 @@ cout<< "Starting to save fits files ..."<<endl;
 
 	std::string outMeanFitsFile3 = "./fits/MC_N0=";
     fitsfile *outClusterptr3;
-    fits_create_file(&outClusterptr3, (outMeanFitsFile3+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(int(A))+"_B="+ std::to_string(int(B))+"_R="+ std::to_string(R)+".fits").c_str(), &status);
+    fits_create_file(&outClusterptr3, (outMeanFitsFile3+std::to_string(N0)+"_DC="+std::to_string(darkC)+"_A="+ std::to_string(A)+"_B="+ std::to_string(B)+"_R="+ std::to_string(R)+".fits").c_str(), &status);
 	fits_create_img(outClusterptr3, -32, naxis, naxesOut, &status);
     fits_write_pix(outClusterptr3, TDOUBLE, fpixel, sizeArray, pix_total, &status);
     fits_close_file(outClusterptr3,  &status);
@@ -360,7 +365,6 @@ if (N0>99){
 	h7->Draw(""); // y
 }
 
-
 }*/
 
 int main(int argc, char* argv[]){
@@ -373,8 +377,6 @@ int darkC = atoi(argv[2]); // Dark Current total events
 
 float A = atoi(argv[3]); // first parameter to fit (2D/a1*nu)
 float B = atoi(argv[4]); // second parameter to fit (a1/E(y_w))
-
-//cout<<"A "<<A<<" B "<<B<<endl;
 
 int R = atoi(argv[5]); // RUN number // only to label simulations with the same parameters
 
@@ -446,6 +448,7 @@ cout<<"Content of each histogram saved into pix variables"<<endl;
 save(nx, ny, sizeArray, pix_int, pix_dc, pix_total, N0, darkC, A ,B, R);
 cout<<"Content of pix variables saved into fits files"<<endl;
 
+
 // Histograms (not checked)
 // hist(h1,h2,h3,h4,h5,h6,h7);
 
@@ -461,10 +464,11 @@ cout<<"Content of pix variables saved into fits files"<<endl;
 	h5->Draw("COLZ"); // Interactions + Dark Current
 
 // Print TCanvas into pdf
-	TString ps = "./CCDpdf/CCD_N0"+std::to_string(N0)+"DC"+std::to_string(darkC)+"A"+ std::to_string(int(A))+"B"+ std::to_string(int(B))+"R"+ std::to_string(R)+".pdf";
+	TString ps = "./CCDpdfs/CCD_N0"+std::to_string(N0)+"DC"+std::to_string(darkC)+"A"+ std::to_string(A)+"B"+ std::to_string(B)+"R"+ std::to_string(R)+".pdf";
 	ch2p2->Print(ps+"[");
 	ch2p2->Print(ps);
 	ch2p2->Print(ps+"]");
+
 
 	t.Stop();
 	t.Print();

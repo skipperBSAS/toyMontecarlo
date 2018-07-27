@@ -29,4 +29,5 @@ cd /home/dario/CCD/toy/compare
 echo "Paso a ROOT 6" 
 . /home/dario/root6/bin/thisroot.sh 
 echo "Ejecuto MakePlots para comparar el Montecarlo con el experimento"
-root -l MakePlots.C
+#root -l MakePlots3.C
+root -l p1to2.C

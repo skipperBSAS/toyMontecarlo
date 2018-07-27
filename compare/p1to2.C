@@ -1,7 +1,7 @@
-// Este codigo fue escrito para contar cuantos clusters de tamanio 1 y 2 hay en el archivo con datos experimentales
-// y cuantos en la simulacion Montecarlo, para luego contar cuantos de tamaño 2 quedan al imponer la condicion de que 
-// ninguno de sus dos pixeles tenga un solo electron.
-// Luego se calcula la probabilidad de que un pixel pierda un e en un pixel aledaño.
+// Este codigo fue escrito para contar cuantos clusters de tamanio n y n+1 hay en el archivo con datos experimentales
+// y cuantos en la simulacion Montecarlo, para luego contar cuantos de tamaño n+1 quedan al imponer la condicion de que 
+// ninguno de sus pixeles tenga un solo electron.
+// Luego se calcula la probabilidad de que un cluster pierda un e en un pixel aledaño.
 
 #include <iostream>
 #include <vector>
@@ -32,6 +32,7 @@
 #include "TTree.h"
 #include "TObjString.h"
 #include "TH2D.h"
+
 using namespace std; 
 
 void Enable_and_Set_Branches(TTree* & tree);
@@ -39,22 +40,17 @@ void Enable_and_Set_Branches(TTree* & tree);
 // Setting parameters //////////////////////////////////////////////////
 
 // range for the number of electrons per cluster
-  int emin = 0; int emax = 1700;  
+  int emin = 0; int emax = 2;
   int ohdu_numer = 4;
       
-  ////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
   int Entries_mc = 1;
   int Entries_exp = 1;
   int xmin = 0; // range for histograms of n
-  //int xmin = 1000; // range for histograms of e
   int xmax =20; // range for histograms of n
-  //int xmax =2000; // range for histograms of e
-  //int xBary_min=0;int xBary_max=100;
-  //int yBary_min=0;int yBary_max=100;
   
   int nbins = xmax+1;
-
   const int maxClusterSize = 50000;
    
 ////////////////////////////////////////////////////////////////////////
@@ -70,9 +66,7 @@ void Enable_and_Set_Branches(TTree* & tree);
   int xPix[maxClusterSize]; 
   int yPix[maxClusterSize];
   Float_t ePix[maxClusterSize];
-    
-using namespace std;
-
+  
 ////////////////////////////////////////////////////////////////////////
 //  Older compilers
 ////////////////////////////////////////////////////////////////////////
@@ -82,32 +76,59 @@ string itos(const int i){
 	return ossAux.str();
 }
 
-int nnMax=3; // Maximum number of cluster to be considerer
-int mmMax=2; // Number of electrones excluded 0, 1, ... mmMax-1
+int nnMax=2; // Maximum number of pixels in a cluster to be considerer
+int mmMax=1; // Number of electrones excluded 0, 1, ... mmMax-1
 
-//int counter_exp[nnMax][mmMax];
-//int counter[nnMax][mmMax];
 int counter_exp[10][10];
 int counter_mc[10][10];
 
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
 void p1to2(){  
 
-for (int nn=1;nn<nnMax;nn++){
-for (int mm=0;mm<mmMax;mm++){
+bool FirstTime = true;
+int point =0;
+
+cout<<"e min: "<<emin<<endl;
+cout<<"e max: "<<emax<<endl;
+
+int tamanio=29;
+double x[tamanio];
+double pmc[tamanio];
+double pdatos;
+
+for(int N=1;N<2; N++){
+//for(int N=100;N<101; N++){
+	for(int DC=100;DC<2901; DC=DC+100){ 
+		for(int A=2500;A<2501; A=A+100){
+			for(int B=30;B<31; B=B+10){
+
+	x[point] = DC;
+	point += 1; // counter 
+
+	cout<<"Interactions: "<<N<<endl;
+	cout<<"Dark Current: "<<DC<<endl;
+	cout<<"Parameter A : "<<A<<endl;
+	cout<<"Parameter B : "<<B<<endl<<endl;
+
+	for (int nn=1;nn<=nnMax;nn++){ 
+	for (int mm=0;mm<=mmMax;mm++){
 	
 	float minePix = 1.5; // will be clasified as 1e-
 	minePix=minePix*mm;
 
+	if (FirstTime){
 
-// Experimental Data ///////////////////////////////////////////////////
-// Get input files//////////////////////////////////////////////////////
+	// Experimental Data ///////////////////////////////////////////////////
+	// Get input files//////////////////////////////////////////////////////
 
 					TFile * f_exp = TFile::Open("55Fe_exp.root");
 					if (!f_exp->IsOpen()) {std::cerr << "ERROR: cannot open the root file with experimental data" << std::endl;}
 					TTree * texp = (TTree*) f_exp->Get("hitSumm");
 
 					int Entries_exp = texp -> GetEntries();
-					cout<<"Entries in experimental data file: "<<Entries_exp<<endl;
+					//cout<<"Entries in experimental data file: "<<Entries_exp<<endl;
 					
 					Enable_and_Set_Branches(texp); 
 
@@ -118,8 +139,9 @@ for (int mm=0;mm<mmMax;mm++){
 					texp->GetEntry(i_event);
 					
 						if (ohdu == ohdu_numer) {
-							if (e>emin && e<emax){  // number of electrons
-								if (n==nn){
+							if (e>=emin && e<=emax){  // number of electrons
+								//if (n==nn && xBary>255 && xBary<495 && yBary>5 && yBary<45){
+								if (n==nn && xBary>5 && xBary<245 && yBary>5 && yBary<45){
 									
 									// Check if one of the pixels in the cluster is smaller that minePix
 									bool noLowPixInCluster = true;
@@ -131,24 +153,16 @@ for (int mm=0;mm<mmMax;mm++){
 									}
 
 									if (noLowPixInCluster){
-											counter_exp[nn][mm]=counter_exp[nn][mm]+1;
+											counter_exp[nn][mm]+=1;
 									}
 								}	
 							}
 						}
 					}									
-					
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-
-	for(int N=100;N<101; N++){
-		for(int DC=0;DC<1; DC=DC+150){ 
-			for(int A=1800;A<1801; A=A+400){
-				for(int B=20;B<21; B=B+10){
-							
-				// Monte Carlo Data ////////////////////////////////////////////////////
-				// Get input files//////////////////////////////////////////////////////	
+	}
+											
+// Monte Carlo Data ////////////////////////////////////////////////////
+// Get input files//////////////////////////////////////////////////////	
 					
 					TFile * f_mc = TFile::Open(("Out_N0="+itos(N)+"_DC="+itos(DC)+"_A="+itos(A)+"_B="+itos(B)+".root").c_str());
 					
@@ -156,7 +170,7 @@ for (int mm=0;mm<mmMax;mm++){
 					TTree * tmc    = (TTree*) f_mc->Get("hitSumm");
 					
 					int Entries_mc = tmc -> GetEntries();
-					cout<<"Entries in MC file: "<<Entries_mc<<endl;
+					//cout<<"Entries in MC file: "<<Entries_mc<<endl;
 
 					Enable_and_Set_Branches(tmc);
 					
@@ -166,8 +180,8 @@ for (int mm=0;mm<mmMax;mm++){
 					
 					tmc->GetEntry(i_event);
 
-						if (e>emin && e<emax){  // number of electrons
-							if (n==nn){
+						if (e>=emin && e<=emax){  // number of electrons
+							if (n==nn && xBary>5 && xBary<245 && yBary>5 && yBary<45){
 								
 								// Check if one of the pixels in the cluster is smaller that minePix
 								bool noLowPixInCluster = true;
@@ -177,38 +191,56 @@ for (int mm=0;mm<mmMax;mm++){
 										break;
 									}
 								}
+
 								if (noLowPixInCluster){
-										counter_mc[nn][mm]=counter_mc[nn][mm]+1;
+										counter_mc[nn][mm]+=1;
 								}
 							}	
 						}
 					}
-					
+					/*
 					cout<<"min ePix:                "<<minePix<<endl;
 					cout<<"tamaño del cluster:      "<<nn<<endl;
 					cout<<"Eventos en Experimental: "<<counter_exp[nn][mm]<<endl;
 					cout<<"Eventos en Monte Carlo:  "<<counter_mc[nn][mm]<<endl;
 					cout<<endl<<endl;
-	
-				}
-			}
-		}
-	}  
-} // ends loop for m, i.e. minePix=0 and minePix = 1
-} //ends loop for clustersize
+					*/
+	} // ends loop for m, i.e. minePix=0 and minePix = 1
+	} // ends loop for clustersize
+
 
 double num1 = (counter_exp[2][0]-counter_exp[2][1]);
 double deno1 = ((counter_exp[2][0]-counter_exp[2][1])+counter_exp[1][0]);
-double pdatos = num1/deno1;
+pdatos = num1/deno1;
 
 double num2 = (counter_mc[2][0]-counter_mc[2][1]);
 double deno2 = ((counter_mc[2][0]-counter_mc[2][1])+counter_mc[1][0]);
-double pmc =num2/deno2;
+pmc[point] =num2/deno2;
+
+cout<<"probabilidad de perdida de un e en un monocluster en los datos:            "<<pdatos<<endl;
+cout<<"probabilidad de perdida de un e en un monocluster en la simulacion:        "<<pmc[point]<<endl;
 
 cout<<endl;
 
-cout<<"probabilidad de perdida de un e en un monocluster en los datos:            "<<pdatos<<endl;
-cout<<"probabilidad de perdida de un e en un monocluster en la simulacion:        "<<pmc<<endl;
+//getchar();
+
+FirstTime=false;	
+
+			}
+		}
+	}
+}
+
+   TCanvas *c1 = new TCanvas("c1","Probabilidad de extension a dos pixeles",200,10,500,300);
+   c1->SetGrid();
+ 
+   TGraph* gr = new TGraph(tamanio,x,pmc);
+   gr->Draw("A*");
+   
+   TLine *line = new TLine(0,pdatos,3000,pdatos);
+   line->SetLineColor(kRed);
+   line->Draw();
+ 
 }
 
 ////////////////////////////////////////////////////////////////////////
